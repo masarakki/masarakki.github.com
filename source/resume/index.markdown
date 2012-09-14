@@ -5,6 +5,8 @@ date: 2012-09-07 09:53
 comments: false
 sharing: true
 footer: true
+description: "お金なくて死にそうです!!!!高い給料で雇ってください!!!!!!!!!!!!"
+keywords: "money,resume,money,money,more monay"
 ---
 
 アニメ駆動開発Rubyプログラマ
