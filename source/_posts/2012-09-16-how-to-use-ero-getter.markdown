@@ -58,7 +58,7 @@ rake backend:start
 #### サーバの起動
 
 ```
-rackup -p 9393 -D
+rackup -p 9393
 ```
 
 [http://localhost:9393/](http://localhost:9393/) にアクセスするとサーバステータス、キュー、対象サイトのリストなどが見れます。
@@ -75,8 +75,8 @@ git pull origin master
 ```
 bundle install
 rake backend:restart
-ps ax | grep rackup で プロセス探して kill
-rackup -p 9393 -D
+kill -INT `cat rack.pid`
+rackup -p 9393
 ```
 
 とりあえず今回は使い方だけのまとめで終了ー
