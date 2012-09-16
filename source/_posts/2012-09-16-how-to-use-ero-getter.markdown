@@ -38,7 +38,7 @@ bundle install
 make
 ```
 
-Chromeの拡張ページで ero_getter_chrome_extension のディレクトリを指定してインストール。
+Chromeエクステンションのページで ero_getter_chrome_extension のディレクトリを指定してインストール。
 Chromeのアドレスバーの右側におっぱいアイコンが追加されたら成功です。
 
 #### サーバのダウンロード
@@ -63,8 +63,7 @@ rackup -p 9393
 
 [http://localhost:9393/](http://localhost:9393/) にアクセスするとサーバステータス、キュー、対象サイトのリストなどが見れます。
 
-あとは対象画像サイトの記事ページでおっぱいアイコンをクリックすれば $HOME/ero_getter 以下に保存されます
-
+あとは対象画像サイトの記事ページでおっぱいアイコンをクリックすれば $HOME/ero_getter 以下に保存されます。
 
 ### 更新
 
