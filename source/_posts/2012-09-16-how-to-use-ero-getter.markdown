@@ -30,36 +30,29 @@ keywords: "ruby,gem,ero,ero_getter"
 
 #### Chromeエクステンションのインストール
 
-```
-git clone git://github.com/masarakki/ero_getter_chrome_extension.git
-cd ero_getter_chrome_extension
-bundle install
-#( src/ero_getter.coffee の url: を変更してero_getter_serverのホストを変更可能 )
-make
-```
+
+    git clone git://github.com/masarakki/ero_getter_chrome_extension.git
+    cd ero_getter_chrome_extension
+    bundle install
+    #( src/ero_getter.coffee の url: を変更してero_getter_serverのホストを変更可能 )
+    make
 
 Chromeエクステンションのページで ero_getter_chrome_extension のディレクトリを指定してインストール。
 Chromeのアドレスバーの右側におっぱいアイコンが追加されたら成功です。
 
 #### サーバのダウンロード
 
-```
-git clone git://github.com/masarakki/ero_getter_server.git
-cd ero_getter_server
-bundle install
-```
+    git clone git://github.com/masarakki/ero_getter_server.git
+    cd ero_getter_server
+    bundle install
 
 #### バックグラウンドタスクの実行
 
-```
-rake backend:start
-```
+    rake backend:start
 
 #### サーバの起動
 
-```
-rackup -p 9393
-```
+    rackup -p 9393
 
 [http://localhost:9393/](http://localhost:9393/) にアクセスするとサーバステータス、キュー、対象サイトのリストなどが見れます。
 
@@ -67,16 +60,13 @@ rackup -p 9393
 
 ### 更新
 
-```
-git pull origin master
-```
+    git pull origin master
 
 更新があったら
-```
-bundle install
-rake backend:restart
-kill -INT `cat rack.pid`
-rackup -p 9393
-```
+
+    bundle install
+    rake backend:restart
+    kill -INT `cat rack.pid`
+    rackup -p 9393
 
 とりあえず今回は使い方だけのまとめで終了ー
