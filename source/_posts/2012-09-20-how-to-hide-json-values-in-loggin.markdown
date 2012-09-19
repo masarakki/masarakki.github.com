@@ -72,7 +72,7 @@ Rails の標準的なPOSTパラメータ形式の :post => {:password => "abc123
 
     Started POST "/posts" for 127.0.0.1 at 2012-09-20 05:30:56 +0900
     Processing by PostsController#create as */*
-      Parameters: {"json"=>"{\"user_id\":\"abc123\"}"}
+      Parameters: {"json"=>"{\"password\":\"abc123\"}"}
 
 残念、丸見えです! かと言って :json を全部フィルタするのは開発の妨げになってしまいます。
 
