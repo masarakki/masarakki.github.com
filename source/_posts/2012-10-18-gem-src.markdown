@@ -1,0 +1,74 @@
+---
+layout: post
+title: "gem-src"
+date: 2012-10-18 00:13
+comments: true
+categories: [ruby]
+keywords: "ruby,gem"
+description: "gem-srcがすごく使いやすいという話"
+---
+[gem-src](https://github.com/amatsuda/gem-src) がすごく便利。
+
+## よくあるパターン
+
+### 1. gemのソースコードを読みたい時
+gemを使ってるとソースをがっつり追いたくなる時がありますが、そんな時どうしてますか?
+最近編み出したのが、とりあえずインストールされたgemをgitに突っ込むというワザです。
+
+rvmを使っているのでこんな感じに。
+
+    $ cd ~/.rvm/gems/ruby-1.9.4-p194@hoge/gems/hoge_gem
+    $ git init; git add .
+    $ git grep hogehoge
+
+これでも十分に便利ですけど、gemのディレクトリまで行くのが面倒ですよねー。
+
+### 2. gemに Pull Request したい時
+gemの名前は知っていても誰が作ったかなんて覚えてませんよね。
+hubコマンドもユーザ名がわからないと使えません。
+(なぜか hub clone rails はできるんだけどなんでだろう・・・)
+結局githubで検索してリポジトリを探さないといけません。
+
+## gem-srcを使う
+gem-srcを使うと、gem install した時に同時にgithubからソースコードを git clone してくれます。
+その前に .gemrc にダウンロードするディレクトリを設定しておきましょう。
+
+    $ echo "gemsrc_clone_root: ~/src/gems" >> ~/.gemrc
+
+この状態でgem install してみましょう。
+
+    $ gem install ero_getter
+    Fetching: zipruby-0.3.6.gem (100%)
+    Building native extensions.  This could take a while...
+    Fetching: ero_getter-1.6.0.gem (100%)
+    Cloning into '/home/masaki/src/gems/ero_getter'...
+    remote: Counting objects: 665, done.
+    remote: Compressing objects: 100% (310/310), done.
+    remote: Total 665 (delta 306), reused 634 (delta 278)
+    Receiving objects: 100% (665/665), 274.95 KiB | 165 KiB/s, done.
+    Resolving deltas: 100% (306/306), done.
+    Successfully installed zipruby-0.3.6
+    Successfully installed ero_getter-1.6.0
+    2 gems installed
+
+    $ ls ~/src/gem
+    ./  ../  ero_getter/  gem-src/
+
+入りましたね!
+
+    $ cd ~/src/gem/ero_getter
+    $ git remote show origin
+    * remote origin
+      Fetch URL: http://github.com/masarakki/ero_getter
+        Push  URL: http://github.com/masarakki/ero_getter
+
+hubでforkした時と同じ状態なのでそのままhubコマンドでforkも Pull Request もできそうです。
+
+    $ hub fork
+    $ hub pull-request
+
+やったーforkできたよー多分 Pull Request もできるよー
+
+## 条件
+gemのメタデータにあるhomepageの項目がgithubっぽかったらcloneするらしいです。
+なのでみんなhomepageはgithubのurlにしましょう。
