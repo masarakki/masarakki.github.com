@@ -1,1 +1,1 @@
-rvm use --create @octopress
+rvm use --create 1.9.3@octopress
