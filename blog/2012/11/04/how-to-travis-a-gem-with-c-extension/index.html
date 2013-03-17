@@ -1,0 +1,448 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Travis CIでrubyのC拡張が入ったgemのテストをする方法 - masarakki's blog</title>
+  <meta name="author" content="masarakki">
+
+  
+  <meta name="description" content="C拡張が入ったgemはどこにコンパイルされるのという話">
+  <meta name="keywords" content="ruby,travis,c">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://masarakki.github.com/blog/2012/11/04/how-to-travis-a-gem-with-c-extension">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/syntax/syntax.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <style type="text/css">
+    body {
+      padding-bottom: 40px;
+    }
+    h1 {
+      margin-bottom: 15px;
+    }
+    img {
+      max-width: 100%;
+    }
+    .sharing, .meta, .pager {
+      margin: 20px 0px 20px 0px;
+    }
+    .page-footer p {
+      text-align: center;
+    }
+  </style>
+  <script src="/javascripts/libs/jquery.js"></script>
+  <script src="/javascripts/libs/modernizr-2.0.js"></script>
+  <script src="/javascripts/libs/bootstrap.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="masarakki's blog" type="application/atom+xml">
+  
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20908831-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <nav role="navigation"><div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+
+      <a class="brand" href="/">masarakki's blog</a>
+
+      <div class="nav-collapse">
+        <ul class="nav">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/resume">Resume</a></li>
+</ul>
+
+
+        <ul class="nav pull-right" data-subscription="rss">
+          <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+          
+        </ul>
+
+        
+          <form class="pull-right navbar-search" action="http://google.com/search" method="get">
+            <fieldset role="search">
+              <input type="hidden" name="q" value="site:masarakki.github.com" />
+              <input class="search-query" type="text" name="q" results="0" placeholder="Search"/>
+            </fieldset>
+          </form>
+        
+      </div>
+    </div>
+  </div>
+</div>
+</nav>
+  <div class="container">
+    <div class="row-fluid">
+      
+<article class="hentry span9" role="article">
+
+  
+  <header class="page-header">
+    
+      <h1 class="entry-title">Travis CIでrubyのC拡張が入ったgemのテストをする方法</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-04T17:11:00+09:00" pubdate data-updated="true">Nov 4<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>No Such File</h2>
+
+<p>C拡張が含まれたgemをそのままTravisに流してみると、</p>
+
+<pre><code>$ bundle exec rake
+56/home/vagrant/.rvm/rubies/ruby-1.8.7-p358/bin/ruby -S rspec spec/jpeg_spec.rb
+57/home/vagrant/builds/masarakki/jpeg/spec/../lib/jpeg.rb:2:
+  in `require': no such file to load -- jpeg.so (LoadError)
+</code></pre>
+
+<p>自分でコンパイルしないといけないみたいですね。</p>
+
+<h2>とりあえずやってみた</h2>
+
+<p>試しに.travis.ymlでコンパイルの命令を追加してみました。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">before_script</span><span class="p-Indicator">:</span>
+</span><span class='line'><span class="p-Indicator">-</span> <span class="l-Scalar-Plain">cd ext ; ruby extconf.rb ; make install</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>やった! Travisがテスト全部通したよ!!!</p>
+
+<p>Travisの実行ログを見てみると、</p>
+
+<pre><code>55$ cd ext ; ruby extconf.rb ; make install
+56checking for jpeglib.h... yes
+57checking for main() in -ljpeg... yes
+58creating Makefile
+59gcc -I. -I. -I/home/vagrant/.rvm/rubies/ruby-1.8.7-p358/lib/ruby/1.8/i686-linux -I. -DHAVE_JPEGLIB_H  -D_FILE_OFFSET_BITS=64  -fPIC -g -O2  -fPIC   -c jpeg.c
+60gcc -I. -I. -I/home/vagrant/.rvm/rubies/ruby-1.8.7-p358/lib/ruby/1.8/i686-linux -I. -DHAVE_JPEGLIB_H  -D_FILE_OFFSET_BITS=64  -fPIC -g -O2  -fPIC   -c jpeg_error.c
+61gcc -I. -I. -I/home/vagrant/.rvm/rubies/ruby-1.8.7-p358/lib/ruby/1.8/i686-linux -I. -DHAVE_JPEGLIB_H  -D_FILE_OFFSET_BITS=64  -fPIC -g -O2  -fPIC   -c jpeg_jpeg.c
+62gcc -shared -o jpeg.so jpeg.o jpeg_error.o jpeg_jpeg.o -L. -L/home/vagrant/.rvm/rubies/ruby-1.8.7-p358/lib -Wl,-R/home/vagrant/.rvm/rubies/ruby-1.8.7-p358/lib -L.  -rdynamic -Wl,-export-dynamic    -Wl,-R -Wl,/home/vagrant/.rvm/rubies/ruby-1.8.7-p358/lib -L/home/vagrant/.rvm/rubies/ruby-1.8.7-p358/lib -lruby -ljpeg  -lrt -ldl -lcrypt -lm   -lc
+63/usr/bin/install -c -m 0755 jpeg.so /home/vagrant/.rvm/rubies/ruby-1.8.7-p358/lib/ruby/site_ruby/1.8/i686-linux
+
+
+
+    ＿人人人人人人人人人＿
+    ＞　site_ruby の下　＜
+    ￣^Y^Y^Y^Y^Y^Y^Y^￣
+</code></pre>
+
+<p>これはダメですねヤバイですねやっちゃダメですね。</p>
+
+<h2>rake-compiler を使う</h2>
+
+<p><a href="https://github.com/luislavena/rake-compiler">rake-compiler</a> というgemを使うと上手いことやってくれるようです。</p>
+
+<h4>gem追加</h4>
+
+<p>Gemfileに以下を追加</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">gem</span> <span class="s1">&#39;rake-compiler&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>んで</p>
+
+<pre><code>$ bundle install
+</code></pre>
+
+<h4>タスク追加</h4>
+
+<p>Rakefileに以下を追加</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">if</span> <span class="no">RUBY_PLATFORM</span> <span class="o">=~</span> <span class="sr">/java/</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="s1">&#39;rake/javaextensiontask&#39;</span>
+</span><span class='line'>  <span class="no">Rake</span><span class="o">::</span><span class="no">JavaExtensionTask</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;GEM_NAME&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="k">else</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="s1">&#39;rake/extensiontask&#39;</span>
+</span><span class='line'>  <span class="no">Rake</span><span class="o">::</span><span class="no">ExtensionTask</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;GEM_NAME&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>rake-compiler流にディレクトリ構成を直す</h4>
+
+<p>ext直下にextconf.rbがある場合は、ext/GEM_NAME/extconf.rb の形になるようにディレクトリ構成を変更します。</p>
+
+<h4>ためしてみる</h4>
+
+<p>rake compile してみる</p>
+
+<pre><code>$ rake compile
+mkdir -p tmp/x86_64-linux/jpeg/1.9.3
+cd tmp/x86_64-linux/jpeg/1.9.3
+/home/masaki/.rvm/rubies/ruby-1.9.3-p194/bin/ruby -I. ../../../../ext/jpeg/extconf.rb
+checking for jpeglib.h... yes
+checking for main() in -ljpeg... yes
+creating Makefile
+cd -
+cd tmp/x86_64-linux/jpeg/1.9.3
+make
+compiling ../../../../ext/jpeg/jpeg_jpeg.c
+../../../../ext/jpeg/jpeg_jpeg.c: In function ‘jpeg_jpeg_exit’:
+../../../../ext/jpeg/jpeg_jpeg.c:32:5: warning: format not a string literal and no format arguments [-Wformat-security]
+compiling ../../../../ext/jpeg/jpeg.c
+compiling ../../../../ext/jpeg/jpeg_error.c
+linking shared-object jpeg.so
+cd -
+install -c tmp/x86_64-linux/jpeg/1.9.3/jpeg.so lib/jpeg.so
+</code></pre>
+
+<p>環境が汚れなさそうなのは確認できましたね。</p>
+
+<p><em>warning直さないと・・・</em></p>
+
+<h4>travisに教える</h4>
+
+<p>.travis.yml に以下を追加 (もちろん前のは消して)</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">before_script</span><span class="p-Indicator">:</span>
+</span><span class='line'> <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">rake compile</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>travisのログ確認</h4>
+
+<pre><code>39$ rake compile
+40mkdir -p tmp/i686-linux/jpeg/1.8.7
+(中略)
+54install -c tmp/i686-linux/jpeg/1.8.7/jpeg.so lib/jpeg.so
+</code></pre>
+
+<p>環境も汚してないしテストも通りました! やったね!</p>
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="https://travis-ci.org/#!/masarakki/jpeg">Travisの実行結果</a></li>
+<li><a href="https://github.com/masarakki/jpeg">テスト対象プロジェクト</a></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">masarakki</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-04T17:11:00+09:00" pubdate data-updated="true">Nov 4<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ruby/'>ruby</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://masarakki.github.com/blog/2012/11/04/how-to-travis-a-gem-with-c-extension/" data-via="masarakki" data-counturl="http://masarakki.github.com/blog/2012/11/04/how-to-travis-a-gem-with-c-extension/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
+    
+    
+    <ul class="pager">
+      
+      <li class="previous"><a class="basic-alignment left"
+        href="/blog/2012/10/30/home-server-aboned/" title="Previous Post:
+        自宅鯖があぼーんした">&laquo; 自宅鯖があぼーんした</a></li>
+      
+      <li><a href="/blog/archives">Blog Archives</a></li>
+      
+      <li class="next"><a class="basic-alignment right" href="/blog/2013/02/14/supervisor-with-rvm/"
+        title="Next Post: run ruby on supervisor with RVM">run ruby on supervisor with RVM
+        &raquo;</a></li>
+      
+    </ul>
+  </footer>
+</article>
+
+<aside class="sidebar-nav span3">
+  
+    <section class="well">
+  <ul id="recent_posts" class="nav nav-list">
+    <li class="nav-header">Recent Posts</li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/16/make-url-cool/">make url cool</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/14/supervisor-with-rvm/">run ruby on supervisor with RVM</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/04/how-to-travis-a-gem-with-c-extension/">Travis CIでrubyのC拡張が入ったgemのテストをする方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/30/home-server-aboned/">自宅鯖があぼーんした</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/18/gem-src/">gem-src</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section class="well">
+  <ul id="gh_repos" class="nav">
+    <li class="nav-header">GitHub Repos</li>
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/masarakki">@masarakki</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        github.showRepos({
+            user: 'masarakki',
+            count: 6,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/asides/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/107002572043873162468?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo" class="page-footer"><hr>
+<p>
+  Copyright &copy; 2013 - masarakki -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

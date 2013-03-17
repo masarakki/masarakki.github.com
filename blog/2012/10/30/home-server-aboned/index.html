@@ -1,0 +1,424 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>自宅鯖があぼーんした - masarakki's blog</title>
+  <meta name="author" content="masarakki">
+
+  
+  <meta name="description" content="自宅サバが死んでヤバイという件">
+  <meta name="keywords" content="ヤバイ">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://masarakki.github.com/blog/2012/10/30/home-server-aboned">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/syntax/syntax.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <style type="text/css">
+    body {
+      padding-bottom: 40px;
+    }
+    h1 {
+      margin-bottom: 15px;
+    }
+    img {
+      max-width: 100%;
+    }
+    .sharing, .meta, .pager {
+      margin: 20px 0px 20px 0px;
+    }
+    .page-footer p {
+      text-align: center;
+    }
+  </style>
+  <script src="/javascripts/libs/jquery.js"></script>
+  <script src="/javascripts/libs/modernizr-2.0.js"></script>
+  <script src="/javascripts/libs/bootstrap.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="masarakki's blog" type="application/atom+xml">
+  
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20908831-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <nav role="navigation"><div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+
+      <a class="brand" href="/">masarakki's blog</a>
+
+      <div class="nav-collapse">
+        <ul class="nav">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/resume">Resume</a></li>
+</ul>
+
+
+        <ul class="nav pull-right" data-subscription="rss">
+          <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+          
+        </ul>
+
+        
+          <form class="pull-right navbar-search" action="http://google.com/search" method="get">
+            <fieldset role="search">
+              <input type="hidden" name="q" value="site:masarakki.github.com" />
+              <input class="search-query" type="text" name="q" results="0" placeholder="Search"/>
+            </fieldset>
+          </form>
+        
+      </div>
+    </div>
+  </div>
+</div>
+</nav>
+  <div class="container">
+    <div class="row-fluid">
+      
+<article class="hentry span9" role="article">
+
+  
+  <header class="page-header">
+    
+      <h1 class="entry-title">自宅鯖があぼーんした</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-30T02:26:00+09:00" pubdate data-updated="true">Oct 30<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>事の起こり</h2>
+
+<p>今日の朝起きたらtwitterのリロードができなくてブラウザが腐ったのかと思った。
+ブラウザ再起動しても状況改善せず。
+よくよく気づいてみたら妙に部屋が静かだ・・・ 見てみたらサーバちゃん息してないの・・・
+サーバマシンはPPPoE接続とルーティングもやらせていたのでそれも止まってしまったという状態。</p>
+
+<h2>サーバの状況</h2>
+
+<p>起動してみたらfsckしろよクソって言われた。
+(最近ずっと怪しかったけど)ディスクやべーのかなぁ、
+(ずっと気にかかってたけど)とうとう逝ったのかなぁ、
+(ここ数年ずっとそうだけど)カネねえなぁとか思いながらfsck実行してみる。
+fsckが全然終わらなくてそのままにして仕方なく仕事行く。</p>
+
+<p>仕事終わって家に帰ったら妙な臭いがする。
+サーバの電源落ちてる。</p>
+
+<h2>なぜ落ちてたか</h2>
+
+<p>もっかい電源入れてみる。
+なんか定期的にブンって音がするような気がする。
+箱の中覗いてみたらCPU1のファンが数秒に1回、数センチしか動いてない!!
+CPU2のファンなんて全く動いてない!!!
+ケースの一部が透明になってるのが初めて役に立った。</p>
+
+<p>ファンを指で回してみようと思ったけど硬くて動かない。
+ホコリとか詰まって硬くなってるのかな?
+ファン外してみたらCPU表面が焦げてるような感じ。
+臭いの理由と電源落ちてた理由はこれか・・・</p>
+
+<p>シングルユーザモードでの起動はギリギリ大丈夫なようだ</p>
+
+<h2>ネットワーク復旧作業</h2>
+
+<p>とりあえず起動してfsckだけ終わらせた。
+/homeは巨大なのでとりあえず無視。
+/usrが読めるようになったのでとりあえずPPPoEの設定が読めた。
+無線LAN構築に使ってるAPがルータにもなるのでPPPoEを喋らせてみる。
+設定ドキュメントがなかなか難しくて困った。
+なんで家電化された機器はあんなに設定が難しいんだろう・・・
+ネットワーク構成変更中にAPをもともと繋いでたはずのLANケーブルが消失する。
+どこいったんや・・・
+死んだサーバを繋ぐケーブルがない。</p>
+
+<p>fsckが終わってディスクのマウントできるようになった。
+通常起動もできるはずだが、起動プロセス中にリブートかかる。
+ここから先は無理っぽい。</p>
+
+<h2>障害範囲</h2>
+
+<ul>
+<li>ネットワーク全般
+
+<ul>
+<li>APをルータにして復帰</li>
+</ul>
+</li>
+<li>web
+
+<ul>
+<li>全部herokuに移してしまおうかと画策</li>
+<li>この時期コミケ準備会とか見に来るっぽいからまじヤバイ タイミング最悪</li>
+<li>mysqlのデータdumpだるい</li>
+</ul>
+</li>
+<li>ストレージ
+
+<ul>
+<li>一部復旧できないかも</li>
+<li>大量のエロ画像の運命は!?</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>サーバ復旧作業予定</h2>
+
+<ul>
+<li>新しくCPUファン買って付け直せばなんとか起動してくれるかなぁ・・・
+
+<ul>
+<li>AM2時代のOpteron用ファンなんて見つかるのかね</li>
+</ul>
+</li>
+<li>webサーバはクラウドに持って行きたいなぁ</li>
+<li>ストレージだけ手元に持たないといけないからそれどうしよう</li>
+<li>確か1TBのディスクが入ってるからそれ経由して他のマシンのHDDにデータ移動できるかな
+
+<ul>
+<li>RAIDがむしろ邪魔</li>
+</ul>
+</li>
+<li>圧倒的にカネが足りない</li>
+</ul>
+
+
+<h2>突然ネットワークが使えなくなって気づいたこと</h2>
+
+<ul>
+<li>LANケーブル何本か余分に持っていたほうがいい</li>
+<li>テザリングさえあれば何とかなる</li>
+<li>タブレット超便利</li>
+<li>視覚よりも聴覚・嗅覚</li>
+<li>nasneはネットワークが切れてPS3から見えてなくても問題なく動く
+
+<ul>
+<li>繋げた瞬間に録画済み動画がどかっと増えた</li>
+<li>障害中のもバッチリ撮れてた</li>
+<li>上手く設計できてると感心した</li>
+</ul>
+</li>
+<li>ファンが回らなくなったのは初めて サーバ止めずに掃除とかできんの?</li>
+<li>トラブル楽しい
+
+<ul>
+<li>嘘。死ね</li>
+</ul>
+</li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">masarakki</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-30T02:26:00+09:00" pubdate data-updated="true">Oct 30<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/others/'>others</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://masarakki.github.com/blog/2012/10/30/home-server-aboned/" data-via="masarakki" data-counturl="http://masarakki.github.com/blog/2012/10/30/home-server-aboned/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
+    
+    
+    <ul class="pager">
+      
+      <li class="previous"><a class="basic-alignment left"
+        href="/blog/2012/10/18/gem-src/" title="Previous Post:
+        gem-src">&laquo; gem-src</a></li>
+      
+      <li><a href="/blog/archives">Blog Archives</a></li>
+      
+      <li class="next"><a class="basic-alignment right" href="/blog/2012/11/04/how-to-travis-a-gem-with-c-extension/"
+        title="Next Post: Travis CIでrubyのC拡張が入ったgemのテストをする方法">Travis CIでrubyのC拡張が入ったgemのテストをする方法
+        &raquo;</a></li>
+      
+    </ul>
+  </footer>
+</article>
+
+<aside class="sidebar-nav span3">
+  
+    <section class="well">
+  <ul id="recent_posts" class="nav nav-list">
+    <li class="nav-header">Recent Posts</li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/16/make-url-cool/">make url cool</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/14/supervisor-with-rvm/">run ruby on supervisor with RVM</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/04/how-to-travis-a-gem-with-c-extension/">Travis CIでrubyのC拡張が入ったgemのテストをする方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/30/home-server-aboned/">自宅鯖があぼーんした</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/18/gem-src/">gem-src</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section class="well">
+  <ul id="gh_repos" class="nav">
+    <li class="nav-header">GitHub Repos</li>
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/masarakki">@masarakki</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        github.showRepos({
+            user: 'masarakki',
+            count: 6,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/asides/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/107002572043873162468?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo" class="page-footer"><hr>
+<p>
+  Copyright &copy; 2013 - masarakki -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

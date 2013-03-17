@@ -1,0 +1,455 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>RailsログでJSONの一部を隠す方法 - masarakki's blog</title>
+  <meta name="author" content="masarakki">
+
+  
+  <meta name="description" content="キチガイRubyistの技術ブログ">
+  <meta name="keywords" content="rails,filter_parameters,log,config,しがらみ">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://masarakki.github.com/blog/2012/09/20/how-to-hide-json-values-in-loggin">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/syntax/syntax.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <style type="text/css">
+    body {
+      padding-bottom: 40px;
+    }
+    h1 {
+      margin-bottom: 15px;
+    }
+    img {
+      max-width: 100%;
+    }
+    .sharing, .meta, .pager {
+      margin: 20px 0px 20px 0px;
+    }
+    .page-footer p {
+      text-align: center;
+    }
+  </style>
+  <script src="/javascripts/libs/jquery.js"></script>
+  <script src="/javascripts/libs/modernizr-2.0.js"></script>
+  <script src="/javascripts/libs/bootstrap.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="masarakki's blog" type="application/atom+xml">
+  
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20908831-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <nav role="navigation"><div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+
+      <a class="brand" href="/">masarakki's blog</a>
+
+      <div class="nav-collapse">
+        <ul class="nav">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/resume">Resume</a></li>
+</ul>
+
+
+        <ul class="nav pull-right" data-subscription="rss">
+          <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+          
+        </ul>
+
+        
+          <form class="pull-right navbar-search" action="http://google.com/search" method="get">
+            <fieldset role="search">
+              <input type="hidden" name="q" value="site:masarakki.github.com" />
+              <input class="search-query" type="text" name="q" results="0" placeholder="Search"/>
+            </fieldset>
+          </form>
+        
+      </div>
+    </div>
+  </div>
+</div>
+</nav>
+  <div class="container">
+    <div class="row-fluid">
+      
+<article class="hentry span9" role="article">
+
+  
+  <header class="page-header">
+    
+      <h1 class="entry-title">RailsログでJSONの一部を隠す方法</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-20T05:10:00+09:00" pubdate data-updated="true">Sep 20<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Rails のログ出力には filter_parameters という一部のパラメータを隠す便利な機能があります。</p>
+
+<p>デフォルトでは config/application.rb に</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">filter_parameters</span> <span class="o">+=</span> <span class="o">[</span><span class="ss">:password</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>と書かれています。</p>
+
+<p>ここにフィルタしたいパラメータを追加すれば [FILTERED] という文字列に置き換えられます</p>
+
+<p>例えば開発者が user_id を見てはいけない社内ルールがある場合</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">filter_parameters</span> <span class="o">+=</span> <span class="o">[</span><span class="ss">:password</span><span class="p">,</span> <span class="ss">:user_id</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>とすればいいわけです。</p>
+
+<h2>ためしてみる</h2>
+
+<h3>GETの場合</h3>
+
+<pre><code>GET /posts?password=abc123
+</code></pre>
+
+<p>を叩いた場合ログに</p>
+
+<pre><code>Started GET "/posts?password=[FILTERED]" for 127.0.0.1 at 2012-09-20 05:16:44 +0900
+Processing by PostsController#index as HTML
+  Parameters: {"password"=&gt;"[FILTERED]"}
+</code></pre>
+
+<p>とURLもパラメータも [FILTERED] に変えられて出力されます。</p>
+
+<h3>POSTの場合</h3>
+
+<pre><code>POST /posts
+data: password=abc123
+</code></pre>
+
+<p>を叩いた場合ログは</p>
+
+<pre><code>Started POST "/posts" for 127.0.0.1 at 2012-09-20 05:18:12 +0900
+Processing by PostsController#create as */*
+  Parameters: {"password"=&gt;"[FILTERED]"}
+</code></pre>
+
+<p>上手いことフィルタされますね。</p>
+
+<p>Rails の標準的なPOSTパラメータ形式の :post => {:password => &#8220;abc123&#8221;} はどうでしょうか</p>
+
+<pre><code>Started POST "/posts" for 127.0.0.1 at 2012-09-20 05:22:33 +0900
+Processing by PostsController#create as */*
+  Parameters: {"post"=&gt;{"password"=&gt;"[FILTERED]", "title"=&gt;"unko"}}
+</code></pre>
+
+<p>これもきちんとフィルタできてます。</p>
+
+<h2>特殊な事情</h2>
+
+<p>ある特殊な事情から「パラメータは json というキーに json 文字列で入ってくる」というプロジェクトがある場合どうなるでしょうか?
+ほんとにそんなプロジェクトがあるんでしょうか? ファックですね。
+どうせ原因はこのAPIを叩いてくるphpが低脳だからに違いありません。</p>
+
+<pre><code>POST "/post"
+data: json={\"password\":\"abc123\"}
+</code></pre>
+
+<p>という状況です。 ためしてみましょう。</p>
+
+<pre><code>Started POST "/posts" for 127.0.0.1 at 2012-09-20 05:30:56 +0900
+Processing by PostsController#create as */*
+  Parameters: {"json"=&gt;"{\"password\":\"abc123\"}"}
+</code></pre>
+
+<p>残念、丸見えです! かと言って :json を全部フィルタするのは開発の妨げになってしまいます。</p>
+
+<h3>一番かっこ悪い解決方法</h3>
+
+<p>filter_parameters には、|key, value| を引数に取る lambda を指定することもできるようです。
+サンプルでは</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">lambda</span> <span class="k">do</span> <span class="o">|</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">v</span><span class="o">.</span><span class="n">reverse!</span> <span class="k">if</span> <span class="n">k</span> <span class="o">=~</span> <span class="o">%</span><span class="n">rsecret</span><span class="o">/</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>と書かれていますが、reverse! と破壊的メソッドを使っているのがすごく嫌な予感がします。
+どうやら value のオブジェクトを破壊的に変更しないといけないようです。</p>
+
+<p>こんな感じで書いてみました。</p>
+
+<div><script src='https://gist.github.com/3752166.js'></script>
+<noscript><pre><code>config.filter_parameters += [:password, lambda {|k, v|
+   if k.to_sym == :json
+     json = JSON.parse(v).symbolize_keys
+     json[:password] = &quot;[FILTERED]&quot; if json.has_key?(:password)
+     v.replace json.to_s
+   end
+}]</code></pre></noscript></div>
+
+
+<p>ログの出力結果は</p>
+
+<pre><code>Started POST "/posts" for 127.0.0.1 at 2012-09-20 05:49:22 +0900
+Processing by PostsController#create as */*
+  Parameters: {"json"=&gt;"{:password=&gt;\"[FILTERED]\"}"}
+</code></pre>
+
+<p>上手くいってます!!</p>
+
+<p>ポイントは v.replace でオブジェクト自体は変えずに文字列を変更してる点です。
+これを</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">v</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">to_s</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>とやってしまうと上手く動きません。</p>
+
+<p>とりあえずこれで泣く泣く json の入力すべてを捨てる必要はなくなりました。 やった!!</p>
+
+<h3>問題点</h3>
+
+<ul>
+<li>[FILTERED] が定義されているクラスのファイルを require してもクラスが存在しないと言われる? ロード順の問題?</li>
+<li>普通に指定されたフィルタしたいパラメータを lambda 内で再利用できない
+
+<ul>
+<li>lambda での指定は最後に評価されるので</li>
+<li>before_filter (<strong>まさに!</strong>) があれば解決?</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>ほんとにやりたい一番かっこいい解決方法</h2>
+
+<p>:json が渡ってきた場合は filter とかする前に JSON.parse してハッシュにしたい。
+そうすれば普通に filter_parameters += [:password, :user_id] を指定するだけで、
+:post => {:password => &#8220;abc123&#8221;} がフィルタできたのと同様にフィルタできるはず。</p>
+
+<p>次はこれを調べる。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">masarakki</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-20T05:10:00+09:00" pubdate data-updated="true">Sep 20<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/rails/'>rails</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://masarakki.github.com/blog/2012/09/20/how-to-hide-json-values-in-loggin/" data-via="masarakki" data-counturl="http://masarakki.github.com/blog/2012/09/20/how-to-hide-json-values-in-loggin/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
+    
+    
+    <ul class="pager">
+      
+      <li class="previous"><a class="basic-alignment left"
+        href="/blog/2012/09/18/erogetter-with-your-favorite-site/" title="Previous Post:
+        EroGetter with your favorite site!">&laquo; EroGetter with your favorite site!</a></li>
+      
+      <li><a href="/blog/archives">Blog Archives</a></li>
+      
+      <li class="next"><a class="basic-alignment right" href="/blog/2012/09/22/yukkurid/"
+        title="Next Post: yukkurid">yukkurid
+        &raquo;</a></li>
+      
+    </ul>
+  </footer>
+</article>
+
+<aside class="sidebar-nav span3">
+  
+    <section class="well">
+  <ul id="recent_posts" class="nav nav-list">
+    <li class="nav-header">Recent Posts</li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/16/make-url-cool/">make url cool</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/14/supervisor-with-rvm/">run ruby on supervisor with RVM</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/04/how-to-travis-a-gem-with-c-extension/">Travis CIでrubyのC拡張が入ったgemのテストをする方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/30/home-server-aboned/">自宅鯖があぼーんした</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/18/gem-src/">gem-src</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section class="well">
+  <ul id="gh_repos" class="nav">
+    <li class="nav-header">GitHub Repos</li>
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/masarakki">@masarakki</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        github.showRepos({
+            user: 'masarakki',
+            count: 6,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/asides/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/107002572043873162468?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo" class="page-footer"><hr>
+<p>
+  Copyright &copy; 2013 - masarakki -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

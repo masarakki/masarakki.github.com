@@ -1,0 +1,377 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>gem-src - masarakki's blog</title>
+  <meta name="author" content="masarakki">
+
+  
+  <meta name="description" content="gem-srcがすごく使いやすいという話">
+  <meta name="keywords" content="ruby,gem">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://masarakki.github.com/blog/2012/10/18/gem-src">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/syntax/syntax.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <style type="text/css">
+    body {
+      padding-bottom: 40px;
+    }
+    h1 {
+      margin-bottom: 15px;
+    }
+    img {
+      max-width: 100%;
+    }
+    .sharing, .meta, .pager {
+      margin: 20px 0px 20px 0px;
+    }
+    .page-footer p {
+      text-align: center;
+    }
+  </style>
+  <script src="/javascripts/libs/jquery.js"></script>
+  <script src="/javascripts/libs/modernizr-2.0.js"></script>
+  <script src="/javascripts/libs/bootstrap.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="masarakki's blog" type="application/atom+xml">
+  
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20908831-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <nav role="navigation"><div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+
+      <a class="brand" href="/">masarakki's blog</a>
+
+      <div class="nav-collapse">
+        <ul class="nav">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/resume">Resume</a></li>
+</ul>
+
+
+        <ul class="nav pull-right" data-subscription="rss">
+          <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+          
+        </ul>
+
+        
+          <form class="pull-right navbar-search" action="http://google.com/search" method="get">
+            <fieldset role="search">
+              <input type="hidden" name="q" value="site:masarakki.github.com" />
+              <input class="search-query" type="text" name="q" results="0" placeholder="Search"/>
+            </fieldset>
+          </form>
+        
+      </div>
+    </div>
+  </div>
+</div>
+</nav>
+  <div class="container">
+    <div class="row-fluid">
+      
+<article class="hentry span9" role="article">
+
+  
+  <header class="page-header">
+    
+      <h1 class="entry-title">Gem-src</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-18T00:13:00+09:00" pubdate data-updated="true">Oct 18<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><a href="https://github.com/amatsuda/gem-src">gem-src</a> がすごく便利。</p>
+
+<h2>よくあるパターン</h2>
+
+<h3>1. gemのソースコードを読みたい時</h3>
+
+<p>gemを使ってるとソースをがっつり追いたくなる時がありますが、そんな時どうしてますか?
+最近編み出したのが、とりあえずインストールされたgemをgitに突っ込むというワザです。</p>
+
+<p>rvmを使っているのでこんな感じに。</p>
+
+<pre><code>$ cd ~/.rvm/gems/ruby-1.9.4-p194@hoge/gems/hoge_gem
+$ git init; git add .
+$ git grep hogehoge
+</code></pre>
+
+<p>これでも十分に便利ですけど、gemのディレクトリまで行くのが面倒ですよねー。</p>
+
+<h3>2. gemに Pull Request したい時</h3>
+
+<p>gemの名前は知っていても誰が作ったかなんて覚えてませんよね。
+hubコマンドもユーザ名がわからないと使えません。
+(なぜか hub clone rails はできるんだけどなんでだろう・・・)
+結局githubで検索してリポジトリを探さないといけません。</p>
+
+<h2>gem-srcを使う</h2>
+
+<p>gem-srcを使うと、gem install した時に同時にgithubからソースコードを git clone してくれます。
+その前に .gemrc にダウンロードするディレクトリを設定しておきましょう。</p>
+
+<pre><code>$ echo "gemsrc_clone_root: ~/src/gems" &gt;&gt; ~/.gemrc
+</code></pre>
+
+<p>この状態でgem install してみましょう。</p>
+
+<pre><code>$ gem install ero_getter
+Fetching: zipruby-0.3.6.gem (100%)
+Building native extensions.  This could take a while...
+Fetching: ero_getter-1.6.0.gem (100%)
+Cloning into '/home/masaki/src/gems/ero_getter'...
+remote: Counting objects: 665, done.
+remote: Compressing objects: 100% (310/310), done.
+remote: Total 665 (delta 306), reused 634 (delta 278)
+Receiving objects: 100% (665/665), 274.95 KiB | 165 KiB/s, done.
+Resolving deltas: 100% (306/306), done.
+Successfully installed zipruby-0.3.6
+Successfully installed ero_getter-1.6.0
+2 gems installed
+
+$ ls ~/src/gem
+./  ../  ero_getter/  gem-src/
+</code></pre>
+
+<p>入りましたね!</p>
+
+<pre><code>$ cd ~/src/gem/ero_getter
+$ git remote show origin
+* remote origin
+  Fetch URL: http://github.com/masarakki/ero_getter
+    Push  URL: http://github.com/masarakki/ero_getter
+</code></pre>
+
+<p>hubでforkした時と同じ状態なのでそのままhubコマンドでforkも Pull Request もできそうです。</p>
+
+<pre><code>$ hub fork
+$ hub pull-request
+</code></pre>
+
+<p>やったーforkできたよー多分 Pull Request もできるよー</p>
+
+<h2>条件</h2>
+
+<p>gemのメタデータにあるhomepageの項目がgithubっぽかったらcloneするらしいです。
+なのでみんなhomepageはgithubのurlにしましょう。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">masarakki</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-18T00:13:00+09:00" pubdate data-updated="true">Oct 18<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ruby/'>ruby</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://masarakki.github.com/blog/2012/10/18/gem-src/" data-via="masarakki" data-counturl="http://masarakki.github.com/blog/2012/10/18/gem-src/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
+    
+    
+    <ul class="pager">
+      
+      <li class="previous"><a class="basic-alignment left"
+        href="/blog/2012/10/07/make-yukkuri-to-use-accent/" title="Previous Post:
+        ゆっくりにアクセントをつけてみた">&laquo; ゆっくりにアクセントをつけてみた</a></li>
+      
+      <li><a href="/blog/archives">Blog Archives</a></li>
+      
+      <li class="next"><a class="basic-alignment right" href="/blog/2012/10/30/home-server-aboned/"
+        title="Next Post: 自宅鯖があぼーんした">自宅鯖があぼーんした
+        &raquo;</a></li>
+      
+    </ul>
+  </footer>
+</article>
+
+<aside class="sidebar-nav span3">
+  
+    <section class="well">
+  <ul id="recent_posts" class="nav nav-list">
+    <li class="nav-header">Recent Posts</li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/16/make-url-cool/">make url cool</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/14/supervisor-with-rvm/">run ruby on supervisor with RVM</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/04/how-to-travis-a-gem-with-c-extension/">Travis CIでrubyのC拡張が入ったgemのテストをする方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/30/home-server-aboned/">自宅鯖があぼーんした</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/18/gem-src/">gem-src</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section class="well">
+  <ul id="gh_repos" class="nav">
+    <li class="nav-header">GitHub Repos</li>
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/masarakki">@masarakki</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        github.showRepos({
+            user: 'masarakki',
+            count: 6,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/asides/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/107002572043873162468?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo" class="page-footer"><hr>
+<p>
+  Copyright &copy; 2013 - masarakki -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

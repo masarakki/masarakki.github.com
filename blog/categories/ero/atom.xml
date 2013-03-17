@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ero | masarakki's blog]]></title>
+  <link href="http://masarakki.github.com/blog/categories/ero/atom.xml" rel="self"/>
+  <link href="http://masarakki.github.com/"/>
+  <updated>2013-03-17T20:51:26+09:00</updated>
+  <id>http://masarakki.github.com/</id>
+  <author>
+    <name><![CDATA[masarakki]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[EroGetter with your favorite site!]]></title>
+    <link href="http://masarakki.github.com/blog/2012/09/18/erogetter-with-your-favorite-site/"/>
+    <updated>2012-09-18T08:06:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2012/09/18/erogetter-with-your-favorite-site</id>
+    <content type="html"><![CDATA[<h2>EroGetter対応サイトを増やす</h2>
+
+<p>サイト定義を書くことで対応サイトを増やすことができます。</p>
+
+<h3>準備するもの</h3>
+
+<ul>
+<li>まともな(ry</li>
+<li>対象サイト
+
+<ul>
+<li>記事urlの正規表現</li>
+<li>サイト名</li>
+</ul>
+</li>
+<li>エロにかける情熱</li>
+</ul>
+
+
+<p>今回追加するサイトは <strong>http://example.com/archives/\d.html えろいぐざんぷるどっとこむ</strong> とします。</p>
+
+<h4>ダウンロード</h4>
+
+<pre><code>git clone git://github.com/masarakki/ero_getter.git
+cd ero_getter
+bundle install
+git checkout -b add_example_dot_com
+</code></pre>
+
+<h4>クラス名の決定</h4>
+
+<p>サイト名が <strong>えろいぐざんぷるどっとこむ</strong> なのでクラス名は <strong>EroExample</strong> とします。
+通例に従って、ファイル名などは <strong>ero_example</strong> のようなスネークケースになります。</p>
+
+<h4>サンプルファイルの追加</h4>
+
+<pre><code>mkdir spec/samples/ero_example
+wget http://example.com/archives/1234567.html -o spec/samples/ero_example/sample.html
+</code></pre>
+
+<p>その1〜 のように連番になっているサイトの場合は先頭、中間、最後のファイルをそれぞれ別名で保存してください。</p>
+
+<h4>テストの追加</h4>
+
+<p><em>spec/downloader/</em> にある他のサイト定義のファイルをコピーして、
+<strong>spec/downloader/ero_example_spec.rb</strong> を作ります。
+連番サイトは <em>nijigazou_sokuhou_spec.rb</em>、 そうでないサイトはそれ以外のファイルがいいでしょう。</p>
+
+<p>ファイルを開いてそれっぽいところを変更します。</p>
+
+<p>```ruby
+describe EroExample do                                     # クラス名を変更
+  subject { @dl }
+  let(:url) { 'http://example.com/archives/1234567.html' } # urlを変更
+  before do</p>
+
+<pre><code>FileUtils.stub(:mkdir_p)
+@dl = EroExample.new(url)                              # クラスを変更
+fake(:get, url, 'ero_example/sample.html')             # サンプルファイルを変更
+</code></pre>
+
+<p>  end
+  its(:sub_directory) { should == '1234567' }              # サブディレクトリ名を変更
+  its("targets.count") { should == 26 }                    # サンプルファイルの画像数に変更
+end
+```</p>
+
+<pre><code>rspec spec/downloader/ero_example_spec.rb
+</code></pre>
+
+<p>を実行してFailがひとつも出なくなるようにサイト定義をいじります。</p>
+
+<p>別のターミナルを立てて</p>
+
+<pre><code>bundle exec guard start
+</code></pre>
+
+<p>でguardを動かしてCIすることもできます。</p>
+
+<h4>サイト定義の追加</h4>
+
+<p><strong>lib/downloader/ero_example.rb</strong> に、 <strong>EroGetter::Base</strong> を継承したクラスを作ります。
+対象サイトがLivedoorBlogの場合は、 <strong>EroGetter::Livedoor</strong> が使える場合もあります。</p>
+
+<p>```ruby
+class EroExample &lt; EroGetter::Base
+  name 'えろいぐざんぷるどっとこむ'
+  url %r{http://example.com/archives/\d+.html}
+  target "a > img.ero-file" do |tag|</p>
+
+<pre><code> tag.parent[:href] if path.parent[:href] =~ /jpe?g|gif|png/
+</code></pre>
+
+<p>  end
+  sub_directory do</p>
+
+<pre><code> url.match(/(\d).html/)[1]
+</code></pre>
+
+<p>  end
+  filename {|attr| "%04d%s" % [attr[:index], attr[:ext]] }
+end
+```</p>
+
+<p>肝になるのは <strong>target</strong> のところです。
+targetで取得したい画像のurlを集める方法を指定します。</p>
+
+<p>targetの引数には取得したいタグをcssで指定します。
+そのタグに対してブロックの処理をしてurlを取得します。
+最終的に、 <strong>画像のurlの文字列</strong> を集めなければならないことに注意してください。
+(ただタグを返すだけだとurl文字列ではないということです)</p>
+
+<p>この例の場合、aタグ直下の、クラスにero-fileが付けられたimgタグを全部持ってきて、
+その親要素のhref属性が画像ファイルなら、そのhrefを文字列として返す、という条件になります</p>
+
+<p>rspecを走らせて、取得した画像の件数が一致するまでtargetを調整しましょう。</p>
+
+<h4>連番サイト</h4>
+
+<p>その1〜 など連番で記事が作られるサイトは、ひとつの記事から全てのページを取得する設定が可能です。</p>
+
+<p><em>lib/downloader/nijigazou_sokuhou.rb</em> を参考にしましょう。</p>
+
+<p>```ruby
+  connection ['a[rel=prev]', 'a[rel=next]'] do |path|</p>
+
+<pre><code>path.text.match(Regexp.escape(title_part))
+</code></pre>
+
+<p>  end</p>
+
+<p>  def title_part</p>
+
+<pre><code> title.match(/(.+?)(その.+)?$/)[1]
+</code></pre>
+
+<p>  end
+```</p>
+
+<p><strong>connection</strong> で前後のページへのリンクをcssの配列で指定します。
+ブロックを渡してtrue/falseを返すことで、そのリンクを本当に取得するかどうかを調整できます。
+この場合、タイトルの「その〜」より前の部分が一致したら本当に取得する事になります。</p>
+
+<p>rspecも <em>spec/downloader/nijigazou_sokuhou_spec.rb</em> を参考に、
+前後ページが正しく取得できるか、次がなければnilになるか、をテストしましょう。</p>
+
+<h4>Pull Request</h4>
+
+<p>あとはPull Requestすれば取り込まれます。
+Pull Requestの前にはコミットをひとつにまとめるとかっこいいですよ。</p>
+
+<pre><code>git rebase -i HEAD~10 (十分大きい数字)
+</code></pre>
+
+<p>コミットIDの前の文字列を <strong>s</strong> にすると、その前のコミットと合成されます。
+作業をひとつのコミットにまとめて、コミットメッセージを適切なものに直し、
+pushしてPull Requestで完成です!</p>
+
+<p><em>Enjoy!</em></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[how to use EroGetter]]></title>
+    <link href="http://masarakki.github.com/blog/2012/09/16/how-to-use-ero-getter/"/>
+    <updated>2012-09-16T18:12:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2012/09/16/how-to-use-ero-getter</id>
+    <content type="html"><![CDATA[<p><em>快適エロ生活はEroGetterで。</em></p>
+
+<h2>EroGetterとは?</h2>
+
+<p>エロ画像収集に特化したダウンローダーです。
+汎用ダウンローダーを使う場合に必要になる、余計なURLを除外したり、保存場所を指定したりといった面倒な部分を極力排除してあります。
+サーバとしても動作するので自宅サーバに立てておけば会社にいながら今夜のオカズを集めておくこともできます。</p>
+
+<p>サイト定義を追加してプルリクエストすることにより対応サイトを増やすことができます。</p>
+
+<h2>使い方</h2>
+
+<p>収集だけが目的の場合はこれだけでokです</p>
+
+<h3>用意するもの</h3>
+
+<ul>
+<li>まともにRubyが動くまともなOSのコンピュータ
+
+<ul>
+<li>つまりWindowsでの動作報告を待っています</li>
+</ul>
+</li>
+<li>ruby-1.9.3のインストール</li>
+<li>Google Chrome / Chromium</li>
+</ul>
+
+
+<h4>Chromeエクステンションのインストール</h4>
+
+<pre><code>git clone git://github.com/masarakki/ero_getter_chrome_extension.git
+cd ero_getter_chrome_extension
+bundle install
+#( src/ero_getter.coffee の url: を変更してero_getter_serverのホストを変更可能 )
+make
+</code></pre>
+
+<p>Chromeエクステンションのページで ero_getter_chrome_extension のディレクトリを指定してインストール。
+Chromeのアドレスバーの右側におっぱいアイコンが追加されたら成功です。</p>
+
+<h4>サーバのダウンロード</h4>
+
+<pre><code>git clone git://github.com/masarakki/ero_getter_server.git
+cd ero_getter_server
+bundle install
+</code></pre>
+
+<h4>バックグラウンドタスクの実行</h4>
+
+<pre><code>rake backend:start
+</code></pre>
+
+<h4>サーバの起動</h4>
+
+<pre><code>rackup -p 9393
+</code></pre>
+
+<p><a href="http://localhost:9393/">http://localhost:9393/</a> にアクセスするとサーバステータス、キュー、対象サイトのリストなどが見れます。</p>
+
+<p>あとは対象画像サイトの記事ページでおっぱいアイコンをクリックすれば $HOME/ero_getter 以下に保存されます。</p>
+
+<h3>更新</h3>
+
+<pre><code>git pull origin master
+</code></pre>
+
+<p>更新があったら</p>
+
+<pre><code>bundle install
+rake backend:restart
+kill -INT `cat rack.pid`
+rackup -p 9393
+</code></pre>
+
+<p>とりあえず今回は使い方だけのまとめで終了ー</p>
+]]></content>
+  </entry>
+  
+</feed>

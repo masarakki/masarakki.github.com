@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: unicorn | masarakki's blog]]></title>
+  <link href="http://masarakki.github.com/blog/categories/unicorn/atom.xml" rel="self"/>
+  <link href="http://masarakki.github.com/"/>
+  <updated>2013-03-17T20:51:26+09:00</updated>
+  <id>http://masarakki.github.com/</id>
+  <author>
+    <name><![CDATA[masarakki]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[remove uploaded files in Rails (with unicorn)]]></title>
+    <link href="http://masarakki.github.com/blog/2012/09/15/remove-uploaded-files-in-rails-with-unicorn/"/>
+    <updated>2012-09-15T15:19:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2012/09/15/remove-uploaded-files-in-rails-with-unicorn</id>
+    <content type="html"><![CDATA[<p>Rails + unicorn環境でファイルアップロードを扱うと /tmp/RackMultipart... というファイルが作られなかなか消えません。
+UploadedFileクラスの中身はTempfileなので
+<code>ruby
+params[:file].close(true)
+</code>
+とかやってみてもやっぱり消えません。
+どうやらunicornを再起動して少し経つとGCが起動して消えるような動作をします。</p>
+
+<p>これに対処するため某社では5分に一度unicornを再起動しているようです。
+これではまるで「僕なら、10リクエストごとにApacheを再起動しますね」と言ってるバカと一緒じゃないですか。
+そんなのはよくないですよね。</p>
+
+<p>というわけで色々やってみた結果 「すぐには消えないけど高々プロセス数以下のファイルしか残らない方法」 を見つけました</p>
+
+<p><code>ruby
+def remove_uploaded(file)
+  tmp_path = file.instance_variable_get(:@tempfile).path
+  File.unlink(tmp_path) if File.exists?(tmp_path)
+  file.instance_variable_set(:@tempfile, nil)
+end
+</code></p>
+
+<p>このままッ!! nilを! こいつの! @tempfileに......... つっこんで! 殴り抜けるッ!</p>
+
+<p>これで/tmpが無限に肥大化することはなくなるようです</p>
+]]></content>
+  </entry>
+  
+</feed>

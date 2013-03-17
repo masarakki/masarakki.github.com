@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ruby | masarakki's blog]]></title>
+  <link href="http://masarakki.github.com/blog/categories/ruby/atom.xml" rel="self"/>
+  <link href="http://masarakki.github.com/"/>
+  <updated>2013-03-17T20:51:26+09:00</updated>
+  <id>http://masarakki.github.com/</id>
+  <author>
+    <name><![CDATA[masarakki]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[run ruby on supervisor with RVM]]></title>
+    <link href="http://masarakki.github.com/blog/2013/02/14/supervisor-with-rvm/"/>
+    <updated>2013-02-14T16:17:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2013/02/14/supervisor-with-rvm</id>
+    <content type="html"><![CDATA[<h2>supervisorとは</h2>
+
+<p>supervisorとは、pythonで書かれたプロセス監視ツールです。
+簡単にインストールでき、デーモンとして動作し、
+マシンブート時に任意のプログラムを立ち上げたり、そのプロセスが死んだ時に自動再起動などができます。</p>
+
+<p>動かすプログラムは、単純な無限ループするようなコードでよく、
+プロセス永続化などの面倒な仕事は全部supervisorに任せてしまえます。</p>
+
+<h2>RVMで使う時の問題点</h2>
+
+<p>RVMは個人環境にrubyをインストールし、実行するためには環境変数の整備などが必要で、
+通常はシェルの起動時に設定スクリプトを読み込んで上手いことやってくれます。
+ですが、supervisorを使う場合その方法が取れないのでなんとかしないといけません。</p>
+
+<p>supervisorはenvironmentで環境変数を設定できるのですが、</p>
+
+<p><code>
+$ rvm env
+</code></p>
+
+<p>で出力した環境変数を使っても上手くいきませんでした。</p>
+
+<p><code>
+command=which bundle
+</code></p>
+
+<p>は想定したpathを返すのですが、</p>
+
+<p><code>
+command=bundle exec ...
+</code></p>
+
+<p>にすると bundle not found. と・・・</p>
+
+<p><code>
+command=cd /path/to/project ; bundle exec ...
+</code></p>
+
+<p>にしてみても、上手いこと解釈してくれないし、そもそもcdを見つけてくれません。 (シェル組み込みコマンドだから?)</p>
+
+<p>もう意味わかりません。</p>
+
+<h2>そう言えば昔wrapperってあったよね</h2>
+
+<p>そういえば昔まだbundlerがなくてpassengerが主流だったときは、
+rvm wrapper とかいうのやってそれを使えって書いてあるサイトが多かったと思います。
+なんかマルっと環境を上手いことやってくれるものだっていう認識でした。
+試してみましょう。</p>
+
+<p>なんか適当に名前を付けてwrapperを作ります。
+gemsetも一緒に hoge_task とかの名前にします。</p>
+
+<p><code>
+$ rvm wrapper 1.9.3-p385@hoge_task hoge_task bundle
+</code></p>
+
+<p>これで $HOME/.rvm/bin に hoge_task_bundle というコマンドができあがりました。
+実際にフルパスでこのコマンドを叩くと hoge_task のgemsetを使ってbundleが動いているのがわかります。
+supervisorのcommandの設定にこれを使えば良さそうです。</p>
+
+<p>supervisorの設定ファイルは全体でこんな感じです</p>
+
+<h3>/etc/supervisor/conf.d/hoge_task.conf</h3>
+
+<p><code>
+[program:hoge_task]
+command=/home/{USERNAME}/.rvm/bin/hoge_task_bundle exec rackup -p 8000
+autostart=true
+autorestart=true
+stopsignal=QUIT
+stdout_logfile=/var/log/hoge_task/out.log
+stderr_logfile=/var/log/hoge_task/err.log
+user={USERNAME}
+diretory=/home/{USERNAME}/projects/hoge_task
+</code></p>
+
+<p>あとは</p>
+
+<p><code>
+$ sudo supervisorctl reload
+$ sudo supervisorctl status
+</code></p>
+
+<p>とかやって設定を読み込み直し、結果を見てみましょう。
+多分うまく動き出してるはずですよ!</p>
+
+<h2>Gemfileやruby自体の更新</h2>
+
+<p>プログラムを変更してGemfileが変わった時や、
+rubyのバージョンアップをした時などはどうなるのでしょうか?</p>
+
+<p>これもGemfileのアップデートなら</p>
+
+<p><code>
+$ bundle install
+</code></p>
+
+<p>で、いつもどおりgemをインストールした後、(もちろん @hoge_task のgemsetを使って!)</p>
+
+<p><code>
+$ sudo supervisorctl restart hoge_task
+</code></p>
+
+<p>でプロセスを再起動すればいいはずです。</p>
+
+<p>rubyを更新した場合は、新しいバージョンを指定してrvm wrapperを作りなおせば、
+hoge_task_bundle の中身が書き換えられるので、supervisorの設定はそのままで大丈夫です。
+あとは上と同様に bundle install してプロセスの再起動を指示します。</p>
+
+<h2>もう何も怖くない</h2>
+
+<p>これはsupervisorの設定と言うよりむしろ、
+ユーザ環境にインストールされたrvmをシステムに近いところで使う汎用的な方法のようです。
+自動でrackアプリを起動したり、バックグラウンドでタスクを回したり、いろいろできるようになりました。</p>
+
+<p>というわけで仕事で使うメモでした。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Travis CIでrubyのC拡張が入ったgemのテストをする方法]]></title>
+    <link href="http://masarakki.github.com/blog/2012/11/04/how-to-travis-a-gem-with-c-extension/"/>
+    <updated>2012-11-04T17:11:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2012/11/04/how-to-travis-a-gem-with-c-extension</id>
+    <content type="html"><![CDATA[<h2>No Such File</h2>
+
+<p>C拡張が含まれたgemをそのままTravisに流してみると、</p>
+
+<pre><code>$ bundle exec rake
+56/home/vagrant/.rvm/rubies/ruby-1.8.7-p358/bin/ruby -S rspec spec/jpeg_spec.rb
+57/home/vagrant/builds/masarakki/jpeg/spec/../lib/jpeg.rb:2:
+  in `require': no such file to load -- jpeg.so (LoadError)
+</code></pre>
+
+<p>自分でコンパイルしないといけないみたいですね。</p>
+
+<h2>とりあえずやってみた</h2>
+
+<p>試しに.travis.ymlでコンパイルの命令を追加してみました。</p>
+
+<p><code>yaml
+before_script:
+- cd ext ; ruby extconf.rb ; make install
+</code></p>
+
+<p>やった! Travisがテスト全部通したよ!!!</p>
+
+<p>Travisの実行ログを見てみると、</p>
+
+<pre><code>55$ cd ext ; ruby extconf.rb ; make install
+56checking for jpeglib.h... yes
+57checking for main() in -ljpeg... yes
+58creating Makefile
+59gcc -I. -I. -I/home/vagrant/.rvm/rubies/ruby-1.8.7-p358/lib/ruby/1.8/i686-linux -I. -DHAVE_JPEGLIB_H  -D_FILE_OFFSET_BITS=64  -fPIC -g -O2  -fPIC   -c jpeg.c
+60gcc -I. -I. -I/home/vagrant/.rvm/rubies/ruby-1.8.7-p358/lib/ruby/1.8/i686-linux -I. -DHAVE_JPEGLIB_H  -D_FILE_OFFSET_BITS=64  -fPIC -g -O2  -fPIC   -c jpeg_error.c
+61gcc -I. -I. -I/home/vagrant/.rvm/rubies/ruby-1.8.7-p358/lib/ruby/1.8/i686-linux -I. -DHAVE_JPEGLIB_H  -D_FILE_OFFSET_BITS=64  -fPIC -g -O2  -fPIC   -c jpeg_jpeg.c
+62gcc -shared -o jpeg.so jpeg.o jpeg_error.o jpeg_jpeg.o -L. -L/home/vagrant/.rvm/rubies/ruby-1.8.7-p358/lib -Wl,-R/home/vagrant/.rvm/rubies/ruby-1.8.7-p358/lib -L.  -rdynamic -Wl,-export-dynamic    -Wl,-R -Wl,/home/vagrant/.rvm/rubies/ruby-1.8.7-p358/lib -L/home/vagrant/.rvm/rubies/ruby-1.8.7-p358/lib -lruby -ljpeg  -lrt -ldl -lcrypt -lm   -lc
+63/usr/bin/install -c -m 0755 jpeg.so /home/vagrant/.rvm/rubies/ruby-1.8.7-p358/lib/ruby/site_ruby/1.8/i686-linux
+
+
+
+    ＿人人人人人人人人人＿
+    ＞　site_ruby の下　＜
+    ￣^Y^Y^Y^Y^Y^Y^Y^￣
+</code></pre>
+
+<p>これはダメですねヤバイですねやっちゃダメですね。</p>
+
+<h2>rake-compiler を使う</h2>
+
+<p><a href="https://github.com/luislavena/rake-compiler">rake-compiler</a> というgemを使うと上手いことやってくれるようです。</p>
+
+<h4>gem追加</h4>
+
+<p>Gemfileに以下を追加</p>
+
+<p><code>ruby
+gem 'rake-compiler'
+</code></p>
+
+<p>んで</p>
+
+<pre><code>$ bundle install
+</code></pre>
+
+<h4>タスク追加</h4>
+
+<p>Rakefileに以下を追加</p>
+
+<p><code>ruby
+if RUBY_PLATFORM =~ /java/
+  require 'rake/javaextensiontask'
+  Rake::JavaExtensionTask.new('GEM_NAME')
+else
+  require 'rake/extensiontask'
+  Rake::ExtensionTask.new('GEM_NAME')
+end
+</code></p>
+
+<h4>rake-compiler流にディレクトリ構成を直す</h4>
+
+<p>ext直下にextconf.rbがある場合は、ext/GEM_NAME/extconf.rb の形になるようにディレクトリ構成を変更します。</p>
+
+<h4>ためしてみる</h4>
+
+<p>rake compile してみる</p>
+
+<pre><code>$ rake compile
+mkdir -p tmp/x86_64-linux/jpeg/1.9.3
+cd tmp/x86_64-linux/jpeg/1.9.3
+/home/masaki/.rvm/rubies/ruby-1.9.3-p194/bin/ruby -I. ../../../../ext/jpeg/extconf.rb
+checking for jpeglib.h... yes
+checking for main() in -ljpeg... yes
+creating Makefile
+cd -
+cd tmp/x86_64-linux/jpeg/1.9.3
+make
+compiling ../../../../ext/jpeg/jpeg_jpeg.c
+../../../../ext/jpeg/jpeg_jpeg.c: In function ‘jpeg_jpeg_exit’:
+../../../../ext/jpeg/jpeg_jpeg.c:32:5: warning: format not a string literal and no format arguments [-Wformat-security]
+compiling ../../../../ext/jpeg/jpeg.c
+compiling ../../../../ext/jpeg/jpeg_error.c
+linking shared-object jpeg.so
+cd -
+install -c tmp/x86_64-linux/jpeg/1.9.3/jpeg.so lib/jpeg.so
+</code></pre>
+
+<p>環境が汚れなさそうなのは確認できましたね。</p>
+
+<p><em>warning直さないと・・・</em></p>
+
+<h4>travisに教える</h4>
+
+<p>.travis.yml に以下を追加 (もちろん前のは消して)</p>
+
+<p><code>yaml
+before_script:
+ - rake compile
+</code></p>
+
+<h4>travisのログ確認</h4>
+
+<pre><code>39$ rake compile
+40mkdir -p tmp/i686-linux/jpeg/1.8.7
+(中略)
+54install -c tmp/i686-linux/jpeg/1.8.7/jpeg.so lib/jpeg.so
+</code></pre>
+
+<p>環境も汚してないしテストも通りました! やったね!</p>
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="https://travis-ci.org/#!/masarakki/jpeg">Travisの実行結果</a></li>
+<li><a href="https://github.com/masarakki/jpeg">テスト対象プロジェクト</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[gem-src]]></title>
+    <link href="http://masarakki.github.com/blog/2012/10/18/gem-src/"/>
+    <updated>2012-10-18T00:13:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2012/10/18/gem-src</id>
+    <content type="html"><![CDATA[<p><a href="https://github.com/amatsuda/gem-src">gem-src</a> がすごく便利。</p>
+
+<h2>よくあるパターン</h2>
+
+<h3>1. gemのソースコードを読みたい時</h3>
+
+<p>gemを使ってるとソースをがっつり追いたくなる時がありますが、そんな時どうしてますか?
+最近編み出したのが、とりあえずインストールされたgemをgitに突っ込むというワザです。</p>
+
+<p>rvmを使っているのでこんな感じに。</p>
+
+<pre><code>$ cd ~/.rvm/gems/ruby-1.9.4-p194@hoge/gems/hoge_gem
+$ git init; git add .
+$ git grep hogehoge
+</code></pre>
+
+<p>これでも十分に便利ですけど、gemのディレクトリまで行くのが面倒ですよねー。</p>
+
+<h3>2. gemに Pull Request したい時</h3>
+
+<p>gemの名前は知っていても誰が作ったかなんて覚えてませんよね。
+hubコマンドもユーザ名がわからないと使えません。
+(なぜか hub clone rails はできるんだけどなんでだろう・・・)
+結局githubで検索してリポジトリを探さないといけません。</p>
+
+<h2>gem-srcを使う</h2>
+
+<p>gem-srcを使うと、gem install した時に同時にgithubからソースコードを git clone してくれます。
+その前に .gemrc にダウンロードするディレクトリを設定しておきましょう。</p>
+
+<pre><code>$ echo "gemsrc_clone_root: ~/src/gems" &gt;&gt; ~/.gemrc
+</code></pre>
+
+<p>この状態でgem install してみましょう。</p>
+
+<pre><code>$ gem install ero_getter
+Fetching: zipruby-0.3.6.gem (100%)
+Building native extensions.  This could take a while...
+Fetching: ero_getter-1.6.0.gem (100%)
+Cloning into '/home/masaki/src/gems/ero_getter'...
+remote: Counting objects: 665, done.
+remote: Compressing objects: 100% (310/310), done.
+remote: Total 665 (delta 306), reused 634 (delta 278)
+Receiving objects: 100% (665/665), 274.95 KiB | 165 KiB/s, done.
+Resolving deltas: 100% (306/306), done.
+Successfully installed zipruby-0.3.6
+Successfully installed ero_getter-1.6.0
+2 gems installed
+
+$ ls ~/src/gem
+./  ../  ero_getter/  gem-src/
+</code></pre>
+
+<p>入りましたね!</p>
+
+<pre><code>$ cd ~/src/gem/ero_getter
+$ git remote show origin
+* remote origin
+  Fetch URL: http://github.com/masarakki/ero_getter
+    Push  URL: http://github.com/masarakki/ero_getter
+</code></pre>
+
+<p>hubでforkした時と同じ状態なのでそのままhubコマンドでforkも Pull Request もできそうです。</p>
+
+<pre><code>$ hub fork
+$ hub pull-request
+</code></pre>
+
+<p>やったーforkできたよー多分 Pull Request もできるよー</p>
+
+<h2>条件</h2>
+
+<p>gemのメタデータにあるhomepageの項目がgithubっぽかったらcloneするらしいです。
+なのでみんなhomepageはgithubのurlにしましょう。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ゆっくりにアクセントをつけてみた]]></title>
+    <link href="http://masarakki.github.com/blog/2012/10/07/make-yukkuri-to-use-accent/"/>
+    <updated>2012-10-07T03:21:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2012/10/07/make-yukkuri-to-use-accent</id>
+    <content type="html"><![CDATA[<h2>あらすじ</h2>
+
+<p><em><a href="http://masarakki.github.com/blog/2012/09/22/yukkurid/">前回</a>、
+棒読みちゃんと同じAquesTalkという音声合成エンジンを使い、
+Linuxでも棒読みができるアプリケーションyukkuriを作った俺。</em></p>
+
+<p><em>ところがこのyukkuriには致命的な欠陥があったのだ!!</em></p>
+
+<h2>実際に喋らせてみた</h2>
+
+<p>棒読みちゃん以上に棒読みだった。
+完全に真っ平ら。ぺったんこ。
+<strong>実は棒読みちゃんは棒読みじゃなかった</strong></p>
+
+<p>どうやらAquesTalkは自分でアクセント記号を付けないといけないようです。
+棒読みちゃんにもアクセント付きに変換された文字列が表示されます。</p>
+
+<h2>アクセントの付け方</h2>
+
+<p>やはりこのままmecabを使いたいので 「mecab アクセント」 でぐぐってみたところ、
+<a href="http://www.tokuteicorpus.jp/dist/">Unidic</a>というmecab用アクセント辞書があるようです。
+これを組み込めばアクセントがうまく処理できそうです。</p>
+
+<p>アクセントの仕様はかなり複雑なので一部から実装していきます。
+実際にニコ生で使って気になるアクセントがあったらテストを書いて修正していくという方法を取ります。</p>
+
+<h2>アクセントのテストデータ</h2>
+
+<p>アクセントの処理を実装するにあたって、もちろんテストデータが必要になります。</p>
+
+<h4>方法1. 棒読みちゃんに喋らせてみてアクセント付き文字列を使う</h4>
+
+<p>残念ながらLinuxではWineを使っても棒読みちゃんが動かなかったので断念。</p>
+
+<h4>方法2. TASETのデモページを使う</h4>
+
+<p><a href="https://sites.google.com/site/suzukimasayuki/accent">CRFを用いたアクセント結合推定</a>
+というなんか難しいサイトの <a href="http://www.gavo.t.u-tokyo.ac.jp/~suzuki/taset_demo/">デモページ</a>
+で文章にアクセントをつけることができます。
+ただし変換にかなり時間がかかり、実際に喋らせてみるとなんかちょっと変です。</p>
+
+<h4>方法3. 聞く</h4>
+
+<p>2で作ったアクセントを実際に喋らせてみて、
+自然に聞こえるように微調整するのが一番良さそうです。</p>
+
+<p>ただし、細かい部分では<strong>正しい</strong>日本語の発音なんてのは知らないので、
+こんなもんなのかで済ませます。</p>
+
+<h2>結果</h2>
+
+<p>たぶん棒読みちゃんより正確なアクセントが付けれるようになった。
+確認は<a href="https://github.com/masarakki/yukkurid">コード</a>を実行してみるか、
+<a href="http://com.nicovideo.jp/community/co600306">ニコ生の放送</a>を見てくださいな。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[yukkurid]]></title>
+    <link href="http://masarakki.github.com/blog/2012/09/22/yukkurid/"/>
+    <updated>2012-09-22T06:59:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2012/09/22/yukkurid</id>
+    <content type="html"><![CDATA[<p><em>ゆっくりしていってね!</em></p>
+
+<h2>yukkuridとは?</h2>
+
+<p>棒読みちゃん+デーモン</p>
+
+<p>ニコ生をするのに欠かせないの棒読みちゃんというWindowsアプリがありますが、
+もちろんWindowsアプリなのでLinuxでは動きませんしWineで動くとしても動かしたくないですよね。</p>
+
+<p>でもやっぱり棒読み機能がないと不便なので作ってみました。</p>
+
+<p><a href="https://github.com/masarakki/yukkurid">yukkurid</a></p>
+
+<h2>棒読み部分</h2>
+
+<p>棒読みちゃんは内部で<a href="http://www.a-quest.com/">AquesTalk2</a>という読み上げライブラリを使用していて、
+これはWindows版だけでなくMacOS版とLinux版のライブラリも配布されています。
+<strong>(ただし有料)</strong></p>
+
+<p>棒読みにはそんなに機能は必要無いので、ほとんどサンプルファイルをそのままコンパイルして、
+十分実用なバイナリになりました。</p>
+
+<h2>デーモン部分</h2>
+
+<p>sinatraでちょちょっと作って終了です。
+POSTで受け取ったデータを、漢字が読めない棒読みちゃんのためにmecabで読みに変換して、
+棒読みちゃんに渡して吐かれたwavをALSAに食わせる。
+ワンライナーで瞬殺です。</p>
+
+<p>これでPOSTで送信するとコンピュータがゆっくり喋ってくれるようになりました!</p>
+
+<h2>次の展望</h2>
+
+<p>デーモンにさえすれば、実際にニコ生のコメントをchrome extensionから送信して、
+コンピュータが喋ってくれるようになるはずです。
+EroGetterの時もそうだったけどいちいちデーモンにするのがめんどくさいですがしかたないですね・・・</p>
+
+<p>というわけでchrome extensionのコメビュを作るか既存のをどっかからパクってきて繋ぎこみたいと思います。</p>
+
+<p>あとは今だと喋ってる間ブロックするので非同期化と、それにともなってちゃんとしたキューイングを。</p>
+
+<h2>ところで</h2>
+
+<p><a href="http://www.a-quest.com/licence_free.html">非商用の個人の開発ライセンス</a>を買ったのですが、</p>
+
+<ul>
+<li>アプリの機能として、外部ソフトから当社製品ライブラリの機能を呼び出し可能なインターフェースを持たないこと。</li>
+</ul>
+
+
+<p>ってどういうことなんだろう?
+これをラップした raques.gem みたいなのは作っちゃダメなのかな?
+.soと.hは自分で用意してねっていう形でならok?
+といっても今コンパイル済みバイナリを ./bin/yukkuri に置いてるけど、これも.so無いと動かないよね?
+かといって.so同梱できるようなライセンスじゃないよね? そんなんしたら商売上がったりだよね?
+あんまC方面わからんからこのライセンスが一体何をしてよくて何をしていけないのかわからない。</p>
+]]></content>
+  </entry>
+  
+</feed>

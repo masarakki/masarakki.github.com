@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: rspec | masarakki's blog]]></title>
+  <link href="http://masarakki.github.com/blog/categories/rspec/atom.xml" rel="self"/>
+  <link href="http://masarakki.github.com/"/>
+  <updated>2013-03-17T20:51:26+09:00</updated>
+  <id>http://masarakki.github.com/</id>
+  <author>
+    <name><![CDATA[masarakki]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[ヘルパーメソッドのspecってどう書くの?]]></title>
+    <link href="http://masarakki.github.com/blog/2012/09/10/rspec_for_helper_method/"/>
+    <updated>2012-09-10T11:24:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2012/09/10/rspec_for_helper_method</id>
+    <content type="html"><![CDATA[<p><a href="https://github.com/masarakki/simple_bootstrap_helpers">twitter-bootstrapのよくあるパターンを簡単にかけるヘルパーを集めたgem</a> を作ろうとしてみた
+けどrspecの上手い書き方がわからない</p>
+
+<p>例えばフォームの実行ボタン類を置くエリアを作るヘルパー</p>
+
+<h4>helper</h4>
+
+<p>```ruby
+require 'action_view'
+module BootstrapHelpers
+  include ActionView::Helpers::TagHelper
+  def actions(&amp;block)</p>
+
+<pre><code>content_tag(:div, :class =&gt; 'form-actions', &amp;block)
+</code></pre>
+
+<p>  end
+end
+ActionView::Helpers.send(:include, BootstrapHelpers)
+```</p>
+
+<h5>使い方(haml)</h5>
+
+<p><code>haml
+= actions do
+  f.button :submit, :class =&gt; "btn btn-primary"
+</code></p>
+
+<p>一応これで使えるには使えるが
+もちろんこれのrspecを書きたい</p>
+
+<h4>helper_spec.rb</h4>
+
+<p>```ruby
+describe BootstrapHelpers
+  include BootstrapHelpers</p>
+
+<p>  it "div.form-actionsで囲まれる" do</p>
+
+<pre><code> tag = actions do
+    'hoge'
+ end
+ tag.should match /class="form-actions"/
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>みたいな感じで書けると思ったけど
+実行してみると
+<code>ruby
+undefined method `output_buffer=' for #&lt;RSpec::Core::ExampleGroup::Nested_1::Nested_1:0x0000000241e5b8&gt;
+</code>
+どうやらblockを渡すと capture(&amp;block) される中でoutput_buffer=ねーよって言われるらしい
+となるとblock渡すヘルパーはことごとくspecが書けないことになる</p>
+
+<p>これ以上 helper_spec に余計なこと書かずにこのspecを実行できるようにするにはどうすればいいのだろうか?
+(include BootstrapHelpers の1行だけでも十分余計である)</p>
+
+<p>それともそもそも書き方の方針が大外れしてんのかねぇ</p>
+]]></content>
+  </entry>
+  
+</feed>

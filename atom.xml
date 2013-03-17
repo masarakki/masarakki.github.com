@@ -1,139 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
 
-<!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <title>masarakki's blog</title>
-  <meta name="author" content="masarakki">
-
-  
-  <meta name="description" content="キチガイRubyistの技術ブログ">
-  
-
-  <!-- http://t.co/dKP3o1e -->
-  <meta name="HandheldFriendly" content="True">
-  <meta name="MobileOptimized" content="320">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  
-  <link rel="canonical" href="http://masarakki.github.com">
-  <link href="/favicon.png" rel="icon">
-  <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/stylesheets/syntax/syntax.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <style type="text/css">
-    body {
-      padding-bottom: 40px;
-    }
-    h1 {
-      margin-bottom: 15px;
-    }
-    img {
-      max-width: 100%;
-    }
-    .sharing, .meta, .pager {
-      margin: 20px 0px 20px 0px;
-    }
-    .page-footer p {
-      text-align: center;
-    }
-  </style>
-  <script src="/javascripts/libs/jquery.js"></script>
-  <script src="/javascripts/libs/modernizr-2.0.js"></script>
-  <script src="/javascripts/libs/bootstrap.js"></script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <link href="/atom.xml" rel="alternate" title="masarakki's blog" type="application/atom+xml">
-  
-  
-  <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-20908831-1']);
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  </script>
-
-
-</head>
-
-<body   >
-  <nav role="navigation"><div class="navbar">
-  <div class="navbar-inner">
-    <div class="container">
-      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </a>
-
-      <a class="brand" href="/">masarakki's blog</a>
-
-      <div class="nav-collapse">
-        <ul class="nav">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
-  <li><a href="/resume">Resume</a></li>
-</ul>
-
-
-        <ul class="nav pull-right" data-subscription="rss">
-          <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-          
-        </ul>
-
-        
-          <form class="pull-right navbar-search" action="http://google.com/search" method="get">
-            <fieldset role="search">
-              <input type="hidden" name="q" value="site:masarakki.github.com" />
-              <input class="search-query" type="text" name="q" results="0" placeholder="Search"/>
-            </fieldset>
-          </form>
-        
-      </div>
-    </div>
-  </div>
-</div>
-</nav>
-  <div class="container">
-    <div class="row-fluid">
-      <div class="span9">
-  
-  
-  
-    <article>
-      
-  <header class="page-header">
+  <title><![CDATA[masarakki's blog]]></title>
+  <link href="http://masarakki.github.com/atom.xml" rel="self"/>
+  <link href="http://masarakki.github.com/"/>
+  <updated>2013-03-17T20:51:26+09:00</updated>
+  <id>http://masarakki.github.com/</id>
+  <author>
+    <name><![CDATA[masarakki]]></name>
     
-      <h1 class="entry-title"><a href="/blog/2013/03/16/make-url-cool/">Make Url Cool</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
 
   
-
-
-<time datetime="2013-03-16T17:53:00+09:00" pubdate data-updated="true">Mar 16<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>Railsでurlをカッコ良くする</h2>
+  <entry>
+    <title type="html"><![CDATA[make url cool]]></title>
+    <link href="http://masarakki.github.com/blog/2013/03/16/make-url-cool/"/>
+    <updated>2013-03-16T17:53:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2013/03/16/make-url-cool</id>
+    <content type="html"><![CDATA[<h2>Railsでurlをカッコ良くする</h2>
 
 <p>railsで普通にこんな感じに config/route.rb を書くと、</p>
 
@@ -191,42 +76,15 @@
 
 
 <p>みたいなurlにしたい。 resourcesをきちんと使って。</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header class="page-header">
-    
-      <h1 class="entry-title"><a href="/blog/2013/02/14/supervisor-with-rvm/">Run Ruby on Supervisor With RVM</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-02-14T16:17:00+09:00" pubdate data-updated="true">Feb 14<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>supervisorとは</h2>
+  <entry>
+    <title type="html"><![CDATA[run ruby on supervisor with RVM]]></title>
+    <link href="http://masarakki.github.com/blog/2013/02/14/supervisor-with-rvm/"/>
+    <updated>2013-02-14T16:17:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2013/02/14/supervisor-with-rvm</id>
+    <content type="html"><![CDATA[<h2>supervisorとは</h2>
 
 <p>supervisorとは、pythonで書かれたプロセス監視ツールです。
 簡単にインストールでき、デーモンとして動作し、
@@ -352,42 +210,15 @@ hoge_task_bundle の中身が書き換えられるので、supervisorの設定�
 自動でrackアプリを起動したり、バックグラウンドでタスクを回したり、いろいろできるようになりました。</p>
 
 <p>というわけで仕事で使うメモでした。</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header class="page-header">
-    
-      <h1 class="entry-title"><a href="/blog/2012/11/04/how-to-travis-a-gem-with-c-extension/">Travis CIでrubyのC拡張が入ったgemのテストをする方法</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-11-04T17:11:00+09:00" pubdate data-updated="true">Nov 4<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>No Such File</h2>
+  <entry>
+    <title type="html"><![CDATA[Travis CIでrubyのC拡張が入ったgemのテストをする方法]]></title>
+    <link href="http://masarakki.github.com/blog/2012/11/04/how-to-travis-a-gem-with-c-extension/"/>
+    <updated>2012-11-04T17:11:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2012/11/04/how-to-travis-a-gem-with-c-extension</id>
+    <content type="html"><![CDATA[<h2>No Such File</h2>
 
 <p>C拡張が含まれたgemをそのままTravisに流してみると、</p>
 
@@ -532,42 +363,15 @@ install -c tmp/x86_64-linux/jpeg/1.9.3/jpeg.so lib/jpeg.so
 <li><a href="https://github.com/masarakki/jpeg">テスト対象プロジェクト</a></li>
 </ul>
 
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header class="page-header">
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/30/home-server-aboned/">自宅鯖があぼーんした</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-30T02:26:00+09:00" pubdate data-updated="true">Oct 30<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>事の起こり</h2>
+  <entry>
+    <title type="html"><![CDATA[自宅鯖があぼーんした]]></title>
+    <link href="http://masarakki.github.com/blog/2012/10/30/home-server-aboned/"/>
+    <updated>2012-10-30T02:26:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2012/10/30/home-server-aboned</id>
+    <content type="html"><![CDATA[<h2>事の起こり</h2>
 
 <p>今日の朝起きたらtwitterのリロードができなくてブラウザが腐ったのかと思った。
 ブラウザ再起動しても状況改善せず。
@@ -688,42 +492,15 @@ CPU2のファンなんて全く動いてない!!!
 </li>
 </ul>
 
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header class="page-header">
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/18/gem-src/">Gem-src</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-18T00:13:00+09:00" pubdate data-updated="true">Oct 18<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><a href="https://github.com/amatsuda/gem-src">gem-src</a> がすごく便利。</p>
+  <entry>
+    <title type="html"><![CDATA[gem-src]]></title>
+    <link href="http://masarakki.github.com/blog/2012/10/18/gem-src/"/>
+    <updated>2012-10-18T00:13:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2012/10/18/gem-src</id>
+    <content type="html"><![CDATA[<p><a href="https://github.com/amatsuda/gem-src">gem-src</a> がすごく便利。</p>
 
 <h2>よくあるパターン</h2>
 
@@ -797,42 +574,15 @@ $ hub pull-request
 
 <p>gemのメタデータにあるhomepageの項目がgithubっぽかったらcloneするらしいです。
 なのでみんなhomepageはgithubのurlにしましょう。</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header class="page-header">
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/07/make-yukkuri-to-use-accent/">ゆっくりにアクセントをつけてみた</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-07T03:21:00+09:00" pubdate data-updated="true">Oct 7<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>あらすじ</h2>
+  <entry>
+    <title type="html"><![CDATA[ゆっくりにアクセントをつけてみた]]></title>
+    <link href="http://masarakki.github.com/blog/2012/10/07/make-yukkuri-to-use-accent/"/>
+    <updated>2012-10-07T03:21:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2012/10/07/make-yukkuri-to-use-accent</id>
+    <content type="html"><![CDATA[<h2>あらすじ</h2>
 
 <p><em><a href="http://masarakki.github.com/blog/2012/09/22/yukkurid/">前回</a>、
 棒読みちゃんと同じAquesTalkという音声合成エンジンを使い、
@@ -886,42 +636,15 @@ Linuxでも棒読みができるアプリケーションyukkuriを作った俺�
 <p>たぶん棒読みちゃんより正確なアクセントが付けれるようになった。
 確認は<a href="https://github.com/masarakki/yukkurid">コード</a>を実行してみるか、
 <a href="http://com.nicovideo.jp/community/co600306">ニコ生の放送</a>を見てくださいな。</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header class="page-header">
-    
-      <h1 class="entry-title"><a href="/blog/2012/09/22/yukkurid/">Yukkurid</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-22T06:59:00+09:00" pubdate data-updated="true">Sep 22<span>nd</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><em>ゆっくりしていってね!</em></p>
+  <entry>
+    <title type="html"><![CDATA[yukkurid]]></title>
+    <link href="http://masarakki.github.com/blog/2012/09/22/yukkurid/"/>
+    <updated>2012-09-22T06:59:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2012/09/22/yukkurid</id>
+    <content type="html"><![CDATA[<p><em>ゆっくりしていってね!</em></p>
 
 <h2>yukkuridとは?</h2>
 
@@ -977,42 +700,15 @@ EroGetterの時もそうだったけどいちいちデーモンにするのが�
 といっても今コンパイル済みバイナリを ./bin/yukkuri に置いてるけど、これも.so無いと動かないよね?
 かといって.so同梱できるようなライセンスじゃないよね? そんなんしたら商売上がったりだよね?
 あんまC方面わからんからこのライセンスが一体何をしてよくて何をしていけないのかわからない。</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header class="page-header">
-    
-      <h1 class="entry-title"><a href="/blog/2012/09/20/how-to-hide-json-values-in-loggin/">RailsログでJSONの一部を隠す方法</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-20T05:10:00+09:00" pubdate data-updated="true">Sep 20<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Rails のログ出力には filter_parameters という一部のパラメータを隠す便利な機能があります。</p>
+  <entry>
+    <title type="html"><![CDATA[RailsログでJSONの一部を隠す方法]]></title>
+    <link href="http://masarakki.github.com/blog/2012/09/20/how-to-hide-json-values-in-loggin/"/>
+    <updated>2012-09-20T05:10:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2012/09/20/how-to-hide-json-values-in-loggin</id>
+    <content type="html"><![CDATA[<p>Rails のログ出力には filter_parameters という一部のパラメータを隠す便利な機能があります。</p>
 
 <p>デフォルトでは config/application.rb に</p>
 
@@ -1164,42 +860,15 @@ Processing by PostsController#create as */*
 :post => {:password => &#8220;abc123&#8221;} がフィルタできたのと同様にフィルタできるはず。</p>
 
 <p>次はこれを調べる。</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header class="page-header">
-    
-      <h1 class="entry-title"><a href="/blog/2012/09/18/erogetter-with-your-favorite-site/">EroGetter With Your Favorite Site!</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-18T08:06:00+09:00" pubdate data-updated="true">Sep 18<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>EroGetter対応サイトを増やす</h2>
+  <entry>
+    <title type="html"><![CDATA[EroGetter with your favorite site!]]></title>
+    <link href="http://masarakki.github.com/blog/2012/09/18/erogetter-with-your-favorite-site/"/>
+    <updated>2012-09-18T08:06:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2012/09/18/erogetter-with-your-favorite-site</id>
+    <content type="html"><![CDATA[<h2>EroGetter対応サイトを増やす</h2>
 
 <p>サイト定義を書くことで対応サイトを増やすことができます。</p>
 
@@ -1372,42 +1041,15 @@ Pull Requestの前にはコミットをひとつにまとめるとかっこい�
 pushしてPull Requestで完成です!</p>
 
 <p><em>Enjoy!</em></p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header class="page-header">
-    
-      <h1 class="entry-title"><a href="/blog/2012/09/16/how-to-use-ero-getter/">How to Use EroGetter</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-16T18:12:00+09:00" pubdate data-updated="true">Sep 16<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><em>快適エロ生活はEroGetterで。</em></p>
+  <entry>
+    <title type="html"><![CDATA[how to use EroGetter]]></title>
+    <link href="http://masarakki.github.com/blog/2012/09/16/how-to-use-ero-getter/"/>
+    <updated>2012-09-16T18:12:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2012/09/16/how-to-use-ero-getter</id>
+    <content type="html"><![CDATA[<p><em>快適エロ生活はEroGetterで。</em></p>
 
 <h2>EroGetterとは?</h2>
 
@@ -1482,125 +1124,149 @@ rackup -p 9393
 </code></pre>
 
 <p>とりあえず今回は使い方だけのまとめで終了ー</p>
-</div>
+]]></content>
+  </entry>
   
+  <entry>
+    <title type="html"><![CDATA[remove uploaded files in Rails (with unicorn)]]></title>
+    <link href="http://masarakki.github.com/blog/2012/09/15/remove-uploaded-files-in-rails-with-unicorn/"/>
+    <updated>2012-09-15T15:19:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2012/09/15/remove-uploaded-files-in-rails-with-unicorn</id>
+    <content type="html"><![CDATA[<p>Rails + unicorn環境でファイルアップロードを扱うと /tmp/RackMultipart&#8230; というファイルが作られなかなか消えません。
+UploadedFileクラスの中身はTempfileなので</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">params</span><span class="o">[</span><span class="ss">:file</span><span class="o">].</span><span class="n">close</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>とかやってみてもやっぱり消えません。
+どうやらunicornを再起動して少し経つとGCが起動して消えるような動作をします。</p>
+
+<p>これに対処するため某社では5分に一度unicornを再起動しているようです。
+これではまるで「僕なら、10リクエストごとにApacheを再起動しますね」と言ってるバカと一緒じゃないですか。
+そんなのはよくないですよね。</p>
+
+<p>というわけで色々やってみた結果 「すぐには消えないけど高々プロセス数以下のファイルしか残らない方法」 を見つけました</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">remove_uploaded</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">tmp_path</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">instance_variable_get</span><span class="p">(</span><span class="ss">:@tempfile</span><span class="p">)</span><span class="o">.</span><span class="n">path</span>
+</span><span class='line'>  <span class="no">File</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">)</span> <span class="k">if</span> <span class="no">File</span><span class="o">.</span><span class="n">exists?</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">file</span><span class="o">.</span><span class="n">instance_variable_set</span><span class="p">(</span><span class="ss">:@tempfile</span><span class="p">,</span> <span class="kp">nil</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>このままッ!! nilを! こいつの! @tempfileに&#8230;&#8230;&#8230; つっこんで! 殴り抜けるッ!</p>
+
+<p>これで/tmpが無限に肥大化することはなくなるようです</p>
+]]></content>
+  </entry>
   
+  <entry>
+    <title type="html"><![CDATA[ヘルパーメソッドのspecってどう書くの?]]></title>
+    <link href="http://masarakki.github.com/blog/2012/09/10/rspec_for_helper_method/"/>
+    <updated>2012-09-10T11:24:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2012/09/10/rspec_for_helper_method</id>
+    <content type="html"><![CDATA[<p><a href="https://github.com/masarakki/simple_bootstrap_helpers">twitter-bootstrapのよくあるパターンを簡単にかけるヘルパーを集めたgem</a> を作ろうとしてみた
+けどrspecの上手い書き方がわからない</p>
+
+<p>例えばフォームの実行ボタン類を置くエリアを作るヘルパー</p>
+
+<h4>helper</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;action_view&#39;</span>
+</span><span class='line'><span class="k">module</span> <span class="nn">BootstrapHelpers</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="no">ActionView</span><span class="o">::</span><span class="no">Helpers</span><span class="o">::</span><span class="no">TagHelper</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">actions</span><span class="p">(</span><span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">content_tag</span><span class="p">(</span><span class="ss">:div</span><span class="p">,</span> <span class="ss">:class</span> <span class="o">=&gt;</span> <span class="s1">&#39;form-actions&#39;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="no">ActionView</span><span class="o">::</span><span class="no">Helpers</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="ss">:include</span><span class="p">,</span> <span class="no">BootstrapHelpers</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
-    </article>
+<h5>使い方(haml)</h5>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='haml'><span class='line'><span class="p">=</span> <span class="n">actions</span> <span class="k">do</span>
+</span><span class='line'>  f.button :submit, :class =&gt; &quot;btn btn-primary&quot;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一応これで使えるには使えるが
+もちろんこれのrspecを書きたい</p>
+
+<h4>helper_spec.rb</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">describe</span> <span class="no">BootstrapHelpers</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="no">BootstrapHelpers</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">it</span> <span class="s2">&quot;div.form-actionsで囲まれる&quot;</span> <span class="k">do</span>
+</span><span class='line'>     <span class="n">tag</span> <span class="o">=</span> <span class="n">actions</span> <span class="k">do</span>
+</span><span class='line'>        <span class="s1">&#39;hoge&#39;</span>
+</span><span class='line'>     <span class="k">end</span>
+</span><span class='line'>     <span class="n">tag</span><span class="o">.</span><span class="n">should</span> <span class="n">match</span> <span class="sr">/class=&quot;form-actions&quot;/</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>みたいな感じで書けると思ったけど
+実行してみると</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">undefined</span> <span class="nb">method</span> <span class="sb">`output_buffer=&#39; for #&lt;RSpec::Core::ExampleGroup::Nested_1::Nested_1:0x0000000241e5b8&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>どうやらblockを渡すと capture(&amp;block) される中でoutput_buffer=ねーよって言われるらしい
+となるとblock渡すヘルパーはことごとくspecが書けないことになる</p>
+
+<p>これ以上 helper_spec に余計なこと書かずにこのspecを実行できるようにするにはどうすればいいのだろうか?
+(include BootstrapHelpers の1行だけでも十分余計である)</p>
+
+<p>それともそもそも書き方の方針が大外れしてんのかねぇ</p>
+]]></content>
+  </entry>
   
-  <ul class="pager">
-    
-    <li class="previous"><a href="/blog/page/2/">&larr; Older</a></li>
-    
-    <li><a href="/blog/archives">Blog Archives</a></li>
-    
-  </ul>
-</div>
-<aside class="sidebar-nav span3">
+  <entry>
+    <title type="html"><![CDATA[octopressのテスト]]></title>
+    <link href="http://masarakki.github.com/blog/2012/09/09/octopress/"/>
+    <updated>2012-09-09T01:13:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2012/09/09/octopress</id>
+    <content type="html"><![CDATA[<p>とりあえずoctopressのセットアップしてみた</p>
+
+<p>しかしこのリポジトリを他のコンピュータでpullしてきてrake deployしても更新が上手く行かない
+あと _layout/custom/* をいじってもなかなか反映されない</p>
+
+<p>とりあえず色々使ってみて試すしかないかー
+文字小さくて読むの辛い</p>
+]]></content>
+  </entry>
   
-    <section class="well">
-  <ul id="recent_posts" class="nav nav-list">
-    <li class="nav-header">Recent Posts</li>
-    
-      <li class="post">
-        <a href="/blog/2013/03/16/make-url-cool/">make url cool</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/02/14/supervisor-with-rvm/">run ruby on supervisor with RVM</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/11/04/how-to-travis-a-gem-with-c-extension/">Travis CIでrubyのC拡張が入ったgemのテストをする方法</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/30/home-server-aboned/">自宅鯖があぼーんした</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/18/gem-src/">gem-src</a>
-      </li>
-    
-  </ul>
-</section>
-
-<section class="well">
-  <ul id="gh_repos" class="nav">
-    <li class="nav-header">GitHub Repos</li>
-    <li class="loading">Status updating&#8230;</li>
-  </ul>
-  
-  <a href="https://github.com/masarakki">@masarakki</a> on GitHub
-  
-  <script type="text/javascript">
-    $(document).ready(function(){
-        github.showRepos({
-            user: 'masarakki',
-            count: 6,
-            skip_forks: true,
-            target: '#gh_repos'
-        });
-    });
-  </script>
-  <script src="/javascripts/asides/github.js" type="text/javascript"> </script>
-</section>
-
-
-
-<section class="googleplus">
-  <h1>
-    <a href="https://plus.google.com/107002572043873162468?rel=author">
-      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
-      Google+
-    </a>
-  </h1>
-</section>
-
-
-
-  
-</aside>
-
-    </div>
-  </div>
-  <footer role="contentinfo" class="page-footer"><hr>
-<p>
-  Copyright &copy; 2013 - masarakki -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
-</p>
-
-</footer>
-  
-
-
-
-
-
-  <script type="text/javascript">
-    (function() {
-      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
-      script.src = 'https://apis.google.com/js/plusone.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
-    })();
-  </script>
-
-
-
-  <script type="text/javascript">
-    (function(){
-      var twitterWidgets = document.createElement('script');
-      twitterWidgets.type = 'text/javascript';
-      twitterWidgets.async = true;
-      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
-      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
-    })();
-  </script>
-
-
-
-
-
-</body>
-</html>
+</feed>

@@ -1,0 +1,476 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>EroGetter with your favorite site! - masarakki's blog</title>
+  <meta name="author" content="masarakki">
+
+  
+  <meta name="description" content="EroGetter対応サイトを増やして快適エロ生活">
+  <meta name="keywords" content="ruby,gem,ero,ero_getter">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://masarakki.github.com/blog/2012/09/18/erogetter-with-your-favorite-site">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/syntax/syntax.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <style type="text/css">
+    body {
+      padding-bottom: 40px;
+    }
+    h1 {
+      margin-bottom: 15px;
+    }
+    img {
+      max-width: 100%;
+    }
+    .sharing, .meta, .pager {
+      margin: 20px 0px 20px 0px;
+    }
+    .page-footer p {
+      text-align: center;
+    }
+  </style>
+  <script src="/javascripts/libs/jquery.js"></script>
+  <script src="/javascripts/libs/modernizr-2.0.js"></script>
+  <script src="/javascripts/libs/bootstrap.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="masarakki's blog" type="application/atom+xml">
+  
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20908831-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <nav role="navigation"><div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+
+      <a class="brand" href="/">masarakki's blog</a>
+
+      <div class="nav-collapse">
+        <ul class="nav">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/resume">Resume</a></li>
+</ul>
+
+
+        <ul class="nav pull-right" data-subscription="rss">
+          <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+          
+        </ul>
+
+        
+          <form class="pull-right navbar-search" action="http://google.com/search" method="get">
+            <fieldset role="search">
+              <input type="hidden" name="q" value="site:masarakki.github.com" />
+              <input class="search-query" type="text" name="q" results="0" placeholder="Search"/>
+            </fieldset>
+          </form>
+        
+      </div>
+    </div>
+  </div>
+</div>
+</nav>
+  <div class="container">
+    <div class="row-fluid">
+      
+<article class="hentry span9" role="article">
+
+  
+  <header class="page-header">
+    
+      <h1 class="entry-title">EroGetter With Your Favorite Site!</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-18T08:06:00+09:00" pubdate data-updated="true">Sep 18<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>EroGetter対応サイトを増やす</h2>
+
+<p>サイト定義を書くことで対応サイトを増やすことができます。</p>
+
+<h3>準備するもの</h3>
+
+<ul>
+<li>まともな(ry</li>
+<li>対象サイト
+
+<ul>
+<li>記事urlの正規表現</li>
+<li>サイト名</li>
+</ul>
+</li>
+<li>エロにかける情熱</li>
+</ul>
+
+
+<p>今回追加するサイトは <strong>http://example.com/archives/\d.html えろいぐざんぷるどっとこむ</strong> とします。</p>
+
+<h4>ダウンロード</h4>
+
+<pre><code>git clone git://github.com/masarakki/ero_getter.git
+cd ero_getter
+bundle install
+git checkout -b add_example_dot_com
+</code></pre>
+
+<h4>クラス名の決定</h4>
+
+<p>サイト名が <strong>えろいぐざんぷるどっとこむ</strong> なのでクラス名は <strong>EroExample</strong> とします。
+通例に従って、ファイル名などは <strong>ero_example</strong> のようなスネークケースになります。</p>
+
+<h4>サンプルファイルの追加</h4>
+
+<pre><code>mkdir spec/samples/ero_example
+wget http://example.com/archives/1234567.html -o spec/samples/ero_example/sample.html
+</code></pre>
+
+<p>その1〜 のように連番になっているサイトの場合は先頭、中間、最後のファイルをそれぞれ別名で保存してください。</p>
+
+<h4>テストの追加</h4>
+
+<p><em>spec/downloader/</em> にある他のサイト定義のファイルをコピーして、
+<strong>spec/downloader/ero_example_spec.rb</strong> を作ります。
+連番サイトは <em>nijigazou_sokuhou_spec.rb</em>、 そうでないサイトはそれ以外のファイルがいいでしょう。</p>
+
+<p>ファイルを開いてそれっぽいところを変更します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">describe</span> <span class="no">EroExample</span> <span class="k">do</span>                                     <span class="c1"># クラス名を変更</span>
+</span><span class='line'>  <span class="n">subject</span> <span class="p">{</span> <span class="vi">@dl</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">let</span><span class="p">(</span><span class="ss">:url</span><span class="p">)</span> <span class="p">{</span> <span class="s1">&#39;http://example.com/archives/1234567.html&#39;</span> <span class="p">}</span> <span class="c1"># urlを変更</span>
+</span><span class='line'>  <span class="n">before</span> <span class="k">do</span>
+</span><span class='line'>    <span class="no">FileUtils</span><span class="o">.</span><span class="n">stub</span><span class="p">(</span><span class="ss">:mkdir_p</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@dl</span> <span class="o">=</span> <span class="no">EroExample</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>                              <span class="c1"># クラスを変更</span>
+</span><span class='line'>    <span class="n">fake</span><span class="p">(</span><span class="ss">:get</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="s1">&#39;ero_example/sample.html&#39;</span><span class="p">)</span>             <span class="c1"># サンプルファイルを変更</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">its</span><span class="p">(</span><span class="ss">:sub_directory</span><span class="p">)</span> <span class="p">{</span> <span class="n">should</span> <span class="o">==</span> <span class="s1">&#39;1234567&#39;</span> <span class="p">}</span>              <span class="c1"># サブディレクトリ名を変更</span>
+</span><span class='line'>  <span class="n">its</span><span class="p">(</span><span class="s2">&quot;targets.count&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="n">should</span> <span class="o">==</span> <span class="mi">26</span> <span class="p">}</span>                    <span class="c1"># サンプルファイルの画像数に変更</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<pre><code>rspec spec/downloader/ero_example_spec.rb
+</code></pre>
+
+<p>を実行してFailがひとつも出なくなるようにサイト定義をいじります。</p>
+
+<p>別のターミナルを立てて</p>
+
+<pre><code>bundle exec guard start
+</code></pre>
+
+<p>でguardを動かしてCIすることもできます。</p>
+
+<h4>サイト定義の追加</h4>
+
+<p><strong>lib/downloader/ero_example.rb</strong> に、 <strong>EroGetter::Base</strong> を継承したクラスを作ります。
+対象サイトがLivedoorBlogの場合は、 <strong>EroGetter::Livedoor</strong> が使える場合もあります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">EroExample</span> <span class="o">&lt;</span> <span class="no">EroGetter</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="nb">name</span> <span class="s1">&#39;えろいぐざんぷるどっとこむ&#39;</span>
+</span><span class='line'>  <span class="n">url</span> <span class="sr">%r{http://example.com/archives/\d+.html}</span>
+</span><span class='line'>  <span class="n">target</span> <span class="s2">&quot;a &gt; img.ero-file&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">tag</span><span class="o">|</span>
+</span><span class='line'>     <span class="n">tag</span><span class="o">.</span><span class="n">parent</span><span class="o">[</span><span class="ss">:href</span><span class="o">]</span> <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">parent</span><span class="o">[</span><span class="ss">:href</span><span class="o">]</span> <span class="o">=~</span> <span class="sr">/jpe?g|gif|png/</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">sub_directory</span> <span class="k">do</span>
+</span><span class='line'>     <span class="n">url</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sr">/(\d).html/</span><span class="p">)</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">filename</span> <span class="p">{</span><span class="o">|</span><span class="kp">attr</span><span class="o">|</span> <span class="s2">&quot;%04d%s&quot;</span> <span class="o">%</span> <span class="o">[</span><span class="kp">attr</span><span class="o">[</span><span class="ss">:index</span><span class="o">]</span><span class="p">,</span> <span class="kp">attr</span><span class="o">[</span><span class="ss">:ext</span><span class="o">]]</span> <span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>肝になるのは <strong>target</strong> のところです。
+targetで取得したい画像のurlを集める方法を指定します。</p>
+
+<p>targetの引数には取得したいタグをcssで指定します。
+そのタグに対してブロックの処理をしてurlを取得します。
+最終的に、 <strong>画像のurlの文字列</strong> を集めなければならないことに注意してください。
+(ただタグを返すだけだとurl文字列ではないということです)</p>
+
+<p>この例の場合、aタグ直下の、クラスにero-fileが付けられたimgタグを全部持ってきて、
+その親要素のhref属性が画像ファイルなら、そのhrefを文字列として返す、という条件になります</p>
+
+<p>rspecを走らせて、取得した画像の件数が一致するまでtargetを調整しましょう。</p>
+
+<h4>連番サイト</h4>
+
+<p>その1〜 など連番で記事が作られるサイトは、ひとつの記事から全てのページを取得する設定が可能です。</p>
+
+<p><em>lib/downloader/nijigazou_sokuhou.rb</em> を参考にしましょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">connection</span> <span class="o">[</span><span class="s1">&#39;a[rel=prev]&#39;</span><span class="p">,</span> <span class="s1">&#39;a[rel=next]&#39;</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">path</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">path</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="no">Regexp</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">title_part</span><span class="p">))</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">title_part</span>
+</span><span class='line'>     <span class="n">title</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sr">/(.+?)(その.+)?$/</span><span class="p">)</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>connection</strong> で前後のページへのリンクをcssの配列で指定します。
+ブロックを渡してtrue/falseを返すことで、そのリンクを本当に取得するかどうかを調整できます。
+この場合、タイトルの「その〜」より前の部分が一致したら本当に取得する事になります。</p>
+
+<p>rspecも <em>spec/downloader/nijigazou_sokuhou_spec.rb</em> を参考に、
+前後ページが正しく取得できるか、次がなければnilになるか、をテストしましょう。</p>
+
+<h4>Pull Request</h4>
+
+<p>あとはPull Requestすれば取り込まれます。
+Pull Requestの前にはコミットをひとつにまとめるとかっこいいですよ。</p>
+
+<pre><code>git rebase -i HEAD~10 (十分大きい数字)
+</code></pre>
+
+<p>コミットIDの前の文字列を <strong>s</strong> にすると、その前のコミットと合成されます。
+作業をひとつのコミットにまとめて、コミットメッセージを適切なものに直し、
+pushしてPull Requestで完成です!</p>
+
+<p><em>Enjoy!</em></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">masarakki</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-18T08:06:00+09:00" pubdate data-updated="true">Sep 18<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ero/'>ero</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://masarakki.github.com/blog/2012/09/18/erogetter-with-your-favorite-site/" data-via="masarakki" data-counturl="http://masarakki.github.com/blog/2012/09/18/erogetter-with-your-favorite-site/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
+    
+    
+    <ul class="pager">
+      
+      <li class="previous"><a class="basic-alignment left"
+        href="/blog/2012/09/16/how-to-use-ero-getter/" title="Previous Post:
+        how to use EroGetter">&laquo; how to use EroGetter</a></li>
+      
+      <li><a href="/blog/archives">Blog Archives</a></li>
+      
+      <li class="next"><a class="basic-alignment right" href="/blog/2012/09/20/how-to-hide-json-values-in-loggin/"
+        title="Next Post: RailsログでJSONの一部を隠す方法">RailsログでJSONの一部を隠す方法
+        &raquo;</a></li>
+      
+    </ul>
+  </footer>
+</article>
+
+<aside class="sidebar-nav span3">
+  
+    <section class="well">
+  <ul id="recent_posts" class="nav nav-list">
+    <li class="nav-header">Recent Posts</li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/16/make-url-cool/">make url cool</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/14/supervisor-with-rvm/">run ruby on supervisor with RVM</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/04/how-to-travis-a-gem-with-c-extension/">Travis CIでrubyのC拡張が入ったgemのテストをする方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/30/home-server-aboned/">自宅鯖があぼーんした</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/18/gem-src/">gem-src</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section class="well">
+  <ul id="gh_repos" class="nav">
+    <li class="nav-header">GitHub Repos</li>
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/masarakki">@masarakki</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        github.showRepos({
+            user: 'masarakki',
+            count: 6,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/asides/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/107002572043873162468?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo" class="page-footer"><hr>
+<p>
+  Copyright &copy; 2013 - masarakki -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

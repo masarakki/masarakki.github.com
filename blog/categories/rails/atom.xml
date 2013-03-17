@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: rails | masarakki's blog]]></title>
+  <link href="http://masarakki.github.com/blog/categories/rails/atom.xml" rel="self"/>
+  <link href="http://masarakki.github.com/"/>
+  <updated>2013-03-17T20:51:26+09:00</updated>
+  <id>http://masarakki.github.com/</id>
+  <author>
+    <name><![CDATA[masarakki]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[RailsログでJSONの一部を隠す方法]]></title>
+    <link href="http://masarakki.github.com/blog/2012/09/20/how-to-hide-json-values-in-loggin/"/>
+    <updated>2012-09-20T05:10:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2012/09/20/how-to-hide-json-values-in-loggin</id>
+    <content type="html"><![CDATA[<p>Rails のログ出力には filter_parameters という一部のパラメータを隠す便利な機能があります。</p>
+
+<p>デフォルトでは config/application.rb に
+<code>ruby
+  config.filter_parameters += [:password]
+</code>
+と書かれています。</p>
+
+<p>ここにフィルタしたいパラメータを追加すれば [FILTERED] という文字列に置き換えられます</p>
+
+<p>例えば開発者が user_id を見てはいけない社内ルールがある場合
+<code>ruby
+  config.filter_parameters += [:password, :user_id]
+</code>
+とすればいいわけです。</p>
+
+<h2>ためしてみる</h2>
+
+<h3>GETの場合</h3>
+
+<pre><code>GET /posts?password=abc123
+</code></pre>
+
+<p>を叩いた場合ログに</p>
+
+<pre><code>Started GET "/posts?password=[FILTERED]" for 127.0.0.1 at 2012-09-20 05:16:44 +0900
+Processing by PostsController#index as HTML
+  Parameters: {"password"=&gt;"[FILTERED]"}
+</code></pre>
+
+<p>とURLもパラメータも [FILTERED] に変えられて出力されます。</p>
+
+<h3>POSTの場合</h3>
+
+<pre><code>POST /posts
+data: password=abc123
+</code></pre>
+
+<p>を叩いた場合ログは</p>
+
+<pre><code>Started POST "/posts" for 127.0.0.1 at 2012-09-20 05:18:12 +0900
+Processing by PostsController#create as */*
+  Parameters: {"password"=&gt;"[FILTERED]"}
+</code></pre>
+
+<p>上手いことフィルタされますね。</p>
+
+<p>Rails の標準的なPOSTパラメータ形式の :post => {:password => "abc123"} はどうでしょうか</p>
+
+<pre><code>Started POST "/posts" for 127.0.0.1 at 2012-09-20 05:22:33 +0900
+Processing by PostsController#create as */*
+  Parameters: {"post"=&gt;{"password"=&gt;"[FILTERED]", "title"=&gt;"unko"}}
+</code></pre>
+
+<p>これもきちんとフィルタできてます。</p>
+
+<h2>特殊な事情</h2>
+
+<p>ある特殊な事情から「パラメータは json というキーに json 文字列で入ってくる」というプロジェクトがある場合どうなるでしょうか?
+ほんとにそんなプロジェクトがあるんでしょうか? ファックですね。
+どうせ原因はこのAPIを叩いてくるphpが低脳だからに違いありません。</p>
+
+<pre><code>POST "/post"
+data: json={\"password\":\"abc123\"}
+</code></pre>
+
+<p>という状況です。 ためしてみましょう。</p>
+
+<pre><code>Started POST "/posts" for 127.0.0.1 at 2012-09-20 05:30:56 +0900
+Processing by PostsController#create as */*
+  Parameters: {"json"=&gt;"{\"password\":\"abc123\"}"}
+</code></pre>
+
+<p>残念、丸見えです! かと言って :json を全部フィルタするのは開発の妨げになってしまいます。</p>
+
+<h3>一番かっこ悪い解決方法</h3>
+
+<p>filter_parameters には、|key, value| を引数に取る lambda を指定することもできるようです。
+サンプルでは
+<code>ruby
+lambda do |k,v|
+  v.reverse! if k =~ %rsecret/
+end
+</code>
+と書かれていますが、reverse! と破壊的メソッドを使っているのがすごく嫌な予感がします。
+どうやら value のオブジェクトを破壊的に変更しないといけないようです。</p>
+
+<p>こんな感じで書いてみました。</p>
+
+<p><div><script src='https://gist.github.com/3752166.js'></script>
+<noscript><pre><code>config.filter_parameters += [:password, lambda {|k, v|
+   if k.to_sym == :json
+     json = JSON.parse(v).symbolize_keys
+     json[:password] = &quot;[FILTERED]&quot; if json.has_key?(:password)
+     v.replace json.to_s
+   end
+}]</code></pre></noscript></div>
+</p>
+
+<p>ログの出力結果は</p>
+
+<pre><code>Started POST "/posts" for 127.0.0.1 at 2012-09-20 05:49:22 +0900
+Processing by PostsController#create as */*
+  Parameters: {"json"=&gt;"{:password=&gt;\"[FILTERED]\"}"}
+</code></pre>
+
+<p>上手くいってます!!</p>
+
+<p>ポイントは v.replace でオブジェクト自体は変えずに文字列を変更してる点です。
+これを
+<code>ruby
+v = json.to_s
+</code>
+とやってしまうと上手く動きません。</p>
+
+<p>とりあえずこれで泣く泣く json の入力すべてを捨てる必要はなくなりました。 やった!!</p>
+
+<h3>問題点</h3>
+
+<ul>
+<li>[FILTERED] が定義されているクラスのファイルを require してもクラスが存在しないと言われる? ロード順の問題?</li>
+<li>普通に指定されたフィルタしたいパラメータを lambda 内で再利用できない
+
+<ul>
+<li>lambda での指定は最後に評価されるので</li>
+<li>before_filter (<strong>まさに!</strong>) があれば解決?</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>ほんとにやりたい一番かっこいい解決方法</h2>
+
+<p>:json が渡ってきた場合は filter とかする前に JSON.parse してハッシュにしたい。
+そうすれば普通に filter_parameters += [:password, :user_id] を指定するだけで、
+:post => {:password => "abc123"} がフィルタできたのと同様にフィルタできるはず。</p>
+
+<p>次はこれを調べる。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[remove uploaded files in Rails (with unicorn)]]></title>
+    <link href="http://masarakki.github.com/blog/2012/09/15/remove-uploaded-files-in-rails-with-unicorn/"/>
+    <updated>2012-09-15T15:19:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2012/09/15/remove-uploaded-files-in-rails-with-unicorn</id>
+    <content type="html"><![CDATA[<p>Rails + unicorn環境でファイルアップロードを扱うと /tmp/RackMultipart... というファイルが作られなかなか消えません。
+UploadedFileクラスの中身はTempfileなので
+<code>ruby
+params[:file].close(true)
+</code>
+とかやってみてもやっぱり消えません。
+どうやらunicornを再起動して少し経つとGCが起動して消えるような動作をします。</p>
+
+<p>これに対処するため某社では5分に一度unicornを再起動しているようです。
+これではまるで「僕なら、10リクエストごとにApacheを再起動しますね」と言ってるバカと一緒じゃないですか。
+そんなのはよくないですよね。</p>
+
+<p>というわけで色々やってみた結果 「すぐには消えないけど高々プロセス数以下のファイルしか残らない方法」 を見つけました</p>
+
+<p><code>ruby
+def remove_uploaded(file)
+  tmp_path = file.instance_variable_get(:@tempfile).path
+  File.unlink(tmp_path) if File.exists?(tmp_path)
+  file.instance_variable_set(:@tempfile, nil)
+end
+</code></p>
+
+<p>このままッ!! nilを! こいつの! @tempfileに......... つっこんで! 殴り抜けるッ!</p>
+
+<p>これで/tmpが無限に肥大化することはなくなるようです</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ヘルパーメソッドのspecってどう書くの?]]></title>
+    <link href="http://masarakki.github.com/blog/2012/09/10/rspec_for_helper_method/"/>
+    <updated>2012-09-10T11:24:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2012/09/10/rspec_for_helper_method</id>
+    <content type="html"><![CDATA[<p><a href="https://github.com/masarakki/simple_bootstrap_helpers">twitter-bootstrapのよくあるパターンを簡単にかけるヘルパーを集めたgem</a> を作ろうとしてみた
+けどrspecの上手い書き方がわからない</p>
+
+<p>例えばフォームの実行ボタン類を置くエリアを作るヘルパー</p>
+
+<h4>helper</h4>
+
+<p>```ruby
+require 'action_view'
+module BootstrapHelpers
+  include ActionView::Helpers::TagHelper
+  def actions(&amp;block)</p>
+
+<pre><code>content_tag(:div, :class =&gt; 'form-actions', &amp;block)
+</code></pre>
+
+<p>  end
+end
+ActionView::Helpers.send(:include, BootstrapHelpers)
+```</p>
+
+<h5>使い方(haml)</h5>
+
+<p><code>haml
+= actions do
+  f.button :submit, :class =&gt; "btn btn-primary"
+</code></p>
+
+<p>一応これで使えるには使えるが
+もちろんこれのrspecを書きたい</p>
+
+<h4>helper_spec.rb</h4>
+
+<p>```ruby
+describe BootstrapHelpers
+  include BootstrapHelpers</p>
+
+<p>  it "div.form-actionsで囲まれる" do</p>
+
+<pre><code> tag = actions do
+    'hoge'
+ end
+ tag.should match /class="form-actions"/
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>みたいな感じで書けると思ったけど
+実行してみると
+<code>ruby
+undefined method `output_buffer=' for #&lt;RSpec::Core::ExampleGroup::Nested_1::Nested_1:0x0000000241e5b8&gt;
+</code>
+どうやらblockを渡すと capture(&amp;block) される中でoutput_buffer=ねーよって言われるらしい
+となるとblock渡すヘルパーはことごとくspecが書けないことになる</p>
+
+<p>これ以上 helper_spec に余計なこと書かずにこのspecを実行できるようにするにはどうすればいいのだろうか?
+(include BootstrapHelpers の1行だけでも十分余計である)</p>
+
+<p>それともそもそも書き方の方針が大外れしてんのかねぇ</p>
+]]></content>
+  </entry>
+  
+</feed>
