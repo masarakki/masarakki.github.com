@@ -5,12 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>yukkurid - masarakki's blog</title>
+  <title>Category: java-ja - masarakki's blog</title>
   <meta name="author" content="masarakki">
 
   
-  <meta name="description" content="Linuxでもニコ生で棒読みを使いたいっていうはなし">
-  <meta name="keywords" content="ruby,ツール,ニコ生,ゆっくり,棒読み">
+  <meta name="description" content="Category: java-ja">
+  
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://masarakki.github.com/blog/2012/09/22/yukkurid">
+  <link rel="canonical" href="http://masarakki.github.comblog/categories/java-ja">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -103,150 +103,38 @@
   <div class="container">
     <div class="row-fluid">
       
-<article class="hentry span9" role="article">
+<article role="article" class="span9">
 
   
   <header class="page-header">
-    
-      <h1 class="entry-title">Yukkurid</h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-22T06:59:00+09:00" pubdate data-updated="true">Sep 22<span>nd</span>, 2012</time>
-        
-      </p>
+    <h1 class="entry-title">Category: Java-ja</h1>
     
   </header>
+  
+  <div id="blog-archives" class="category">
 
 
-<div class="entry-content"><p><em>ゆっくりしていってね!</em></p>
 
-<h2>yukkuridとは?</h2>
+  
+  <h1>2013</h1>
 
-<p>棒読みちゃん+デーモン</p>
+<article>
+  <div class="well">
 
-<p>ニコ生をするのに欠かせないの棒読みちゃんというWindowsアプリがありますが、
-もちろんWindowsアプリなのでLinuxでは動きませんしWineで動くとしても動かしたくないですよね。</p>
+<h2><a href="/blog/2013/03/22/java-ja-kowai/">java-ja Kowai</a></h2>
+<time datetime="2013-03-22T22:16:00+09:00" pubdate><span class='month'>Mar</span> <span class='day'>22</span> <span class='year'>2013</span></time>
 
-<p>でもやっぱり棒読み機能がないと不便なので作ってみました。</p>
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/java-ja/'>java-ja</a></span>
+</footer>
 
-<p><a href="https://github.com/masarakki/yukkurid">yukkurid</a></p>
-
-<h2>棒読み部分</h2>
-
-<p>棒読みちゃんは内部で<a href="http://www.a-quest.com/">AquesTalk2</a>という読み上げライブラリを使用していて、
-これはWindows版だけでなくMacOS版とLinux版のライブラリも配布されています。
-<strong>(ただし有料)</strong></p>
-
-<p>棒読みにはそんなに機能は必要無いので、ほとんどサンプルファイルをそのままコンパイルして、
-十分実用なバイナリになりました。</p>
-
-<h2>デーモン部分</h2>
-
-<p>sinatraでちょちょっと作って終了です。
-POSTで受け取ったデータを、漢字が読めない棒読みちゃんのためにmecabで読みに変換して、
-棒読みちゃんに渡して吐かれたwavをALSAに食わせる。
-ワンライナーで瞬殺です。</p>
-
-<p>これでPOSTで送信するとコンピュータがゆっくり喋ってくれるようになりました!</p>
-
-<h2>次の展望</h2>
-
-<p>デーモンにさえすれば、実際にニコ生のコメントをchrome extensionから送信して、
-コンピュータが喋ってくれるようになるはずです。
-EroGetterの時もそうだったけどいちいちデーモンにするのがめんどくさいですがしかたないですね・・・</p>
-
-<p>というわけでchrome extensionのコメビュを作るか既存のをどっかからパクってきて繋ぎこみたいと思います。</p>
-
-<p>あとは今だと喋ってる間ブロックするので非同期化と、それにともなってちゃんとしたキューイングを。</p>
-
-<h2>ところで</h2>
-
-<p><a href="http://www.a-quest.com/licence_free.html">非商用の個人の開発ライセンス</a>を買ったのですが、</p>
-
-<ul>
-<li>アプリの機能として、外部ソフトから当社製品ライブラリの機能を呼び出し可能なインターフェースを持たないこと。</li>
-</ul>
-
-
-<p>ってどういうことなんだろう?
-これをラップした raques.gem みたいなのは作っちゃダメなのかな?
-.soと.hは自分で用意してねっていう形でならok?
-といっても今コンパイル済みバイナリを ./bin/yukkuri に置いてるけど、これも.so無いと動かないよね?
-かといって.so同梱できるようなライセンスじゃないよね? そんなんしたら商売上がったりだよね?
-あんまC方面わからんからこのライセンスが一体何をしてよくて何をしていけないのかわからない。</p>
 </div>
 
+</article>
 
-  <footer>
-    <p class="meta">
-      
-  
-
-<span class="byline author vcard">Posted by <span class="fn">masarakki</span></span>
-
-      
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-22T06:59:00+09:00" pubdate data-updated="true">Sep 22<span>nd</span>, 2012</time>
-      
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/niconico/'>niconico</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
-  
-</span>
-
-
-    </p>
-    
-      <div class="sharing">
-  
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://masarakki.github.com/blog/2012/09/22/yukkurid/" data-via="masarakki" data-counturl="http://masarakki.github.com/blog/2012/09/22/yukkurid/" >Tweet</a>
-  
-  
-  <div class="g-plusone" data-size="medium"></div>
-  
-  
 </div>
 
-    
-    
-    <ul class="pager">
-      
-      <li class="previous"><a class="basic-alignment left"
-        href="/blog/2012/09/20/how-to-hide-json-values-in-loggin/" title="Previous Post:
-        RailsログでJSONの一部を隠す方法">&laquo; RailsログでJSONの一部を隠す方法</a></li>
-      
-      <li><a href="/blog/archives">Blog Archives</a></li>
-      
-      <li class="next"><a class="basic-alignment right" href="/blog/2012/10/07/make-yukkuri-to-use-accent/"
-        title="Next Post: ゆっくりにアクセントをつけてみた">ゆっくりにアクセントをつけてみた
-        &raquo;</a></li>
-      
-    </ul>
-  </footer>
+  
 </article>
 
 <aside class="sidebar-nav span3">

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: java-ja | masarakki's blog]]></title>
+  <link href="http://masarakki.github.com/blog/categories/java-ja/atom.xml" rel="self"/>
+  <link href="http://masarakki.github.com/"/>
+  <updated>2013-03-22T22:17:44+09:00</updated>
+  <id>http://masarakki.github.com/</id>
+  <author>
+    <name><![CDATA[masarakki]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[java-ja Kowai]]></title>
+    <link href="http://masarakki.github.com/blog/2013/03/22/java-ja-kowai/"/>
+    <updated>2013-03-22T22:16:00+09:00</updated>
+    <id>http://masarakki.github.com/blog/2013/03/22/java-ja-kowai</id>
+    <content type="html"><![CDATA[<h1>java-ja.DDD 行ってきました</h1>
+
+<p><strong>java-ja 怖い</strong></p>
+]]></content>
+  </entry>
+  
+</feed>
