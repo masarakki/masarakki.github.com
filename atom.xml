@@ -4,7 +4,7 @@
   <title><![CDATA[masarakki's blog]]></title>
   <link href="http://masarakki.github.com/atom.xml" rel="self"/>
   <link href="http://masarakki.github.com/"/>
-  <updated>2013-12-25T21:16:29+09:00</updated>
+  <updated>2013-12-25T21:19:35+09:00</updated>
   <id>http://masarakki.github.com/</id>
   <author>
     <name><![CDATA[masarakki]]></name>
@@ -98,7 +98,7 @@ ymlを読む前に一回 Erb を通すようにすれば完成です。</p>
 
 <p>unicornは一瞬もサービスが途切れること無くサーバのリスタートができるのが特徴ですが、
 これはシグナルを送ることによって実現しているので、
-<em>ENVを使った場合はリスタートしても設定の変更ができない</em> という問題があります。</p>
+<strong>ENVを使った場合はリスタートしても設定の変更ができない</strong> という問題があります。</p>
 
 <p>ENVを更新しようとすると一旦unicornをstopしてstartしなくてはいけません。
 これではunicornの良さが損なわれるのでなるべくやりたくない方法です。</p>
@@ -109,7 +109,7 @@ ymlを読む前に一回 Erb を通すようにすれば完成です。</p>
 
 <p>やってることは単純です。
 環境変数を付けてデプロイするのをやめて、
-代わりに <em>環境変数を設定するファイル</em> を一緒にデプロイします。
+代わりに <strong>環境変数を設定するファイル(コード)</strong> を一緒にデプロイします。
 unicornをリスタートする前にも環境変数ファイルを毎回デプロイします。
 動かすアプリケーションがRailsの場合は、
 勝手にそのファイルを読み込んでrailsのブート中に環境変数を書き換えます。
