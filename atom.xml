@@ -4,7 +4,7 @@
   <title><![CDATA[masarakki's blog]]></title>
   <link href="http://masarakki.github.com/atom.xml" rel="self"/>
   <link href="http://masarakki.github.com/"/>
-  <updated>2013-05-20T06:06:25+09:00</updated>
+  <updated>2013-12-25T19:50:48+09:00</updated>
   <id>http://masarakki.github.com/</id>
   <author>
     <name><![CDATA[masarakki]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[java-ja Kowai]]></title>
+    <title type="html"><![CDATA[Java-ja Kowai]]></title>
     <link href="http://masarakki.github.com/blog/2013/03/22/java-ja-kowai/"/>
     <updated>2013-03-22T22:16:00+09:00</updated>
     <id>http://masarakki.github.com/blog/2013/03/22/java-ja-kowai</id>
@@ -25,7 +25,7 @@
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[make url cool]]></title>
+    <title type="html"><![CDATA[Make Url Cool]]></title>
     <link href="http://masarakki.github.com/blog/2013/03/16/make-url-cool/"/>
     <updated>2013-03-16T17:53:00+09:00</updated>
     <id>http://masarakki.github.com/blog/2013/03/16/make-url-cool</id>
@@ -91,7 +91,7 @@
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[run ruby on supervisor with RVM]]></title>
+    <title type="html"><![CDATA[Run Ruby on Supervisor With RVM]]></title>
     <link href="http://masarakki.github.com/blog/2013/02/14/supervisor-with-rvm/"/>
     <updated>2013-02-14T16:17:00+09:00</updated>
     <id>http://masarakki.github.com/blog/2013/02/14/supervisor-with-rvm</id>
@@ -507,7 +507,7 @@ CPU2のファンなんて全く動いてない!!!
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[gem-src]]></title>
+    <title type="html"><![CDATA[Gem-src]]></title>
     <link href="http://masarakki.github.com/blog/2012/10/18/gem-src/"/>
     <updated>2012-10-18T00:13:00+09:00</updated>
     <id>http://masarakki.github.com/blog/2012/10/18/gem-src</id>
@@ -651,7 +651,7 @@ Linuxでも棒読みができるアプリケーションyukkuriを作った俺�
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[yukkurid]]></title>
+    <title type="html"><![CDATA[Yukkurid]]></title>
     <link href="http://masarakki.github.com/blog/2012/09/22/yukkurid/"/>
     <updated>2012-09-22T06:59:00+09:00</updated>
     <id>http://masarakki.github.com/blog/2012/09/22/yukkurid</id>
@@ -772,7 +772,7 @@ Processing by PostsController#create as */*
 
 <p>上手いことフィルタされますね。</p>
 
-<p>Rails の標準的なPOSTパラメータ形式の :post => {:password => &#8220;abc123&#8221;} はどうでしょうか</p>
+<p>Rails の標準的なPOSTパラメータ形式の :post => {:password => &ldquo;abc123&rdquo;} はどうでしょうか</p>
 
 <pre><code>Started POST "/posts" for 127.0.0.1 at 2012-09-20 05:22:33 +0900
 Processing by PostsController#create as */*
@@ -868,14 +868,14 @@ Processing by PostsController#create as */*
 
 <p>:json が渡ってきた場合は filter とかする前に JSON.parse してハッシュにしたい。
 そうすれば普通に filter_parameters += [:password, :user_id] を指定するだけで、
-:post => {:password => &#8220;abc123&#8221;} がフィルタできたのと同様にフィルタできるはず。</p>
+:post => {:password => &ldquo;abc123&rdquo;} がフィルタできたのと同様にフィルタできるはず。</p>
 
 <p>次はこれを調べる。</p>
 ]]></content>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[EroGetter with your favorite site!]]></title>
+    <title type="html"><![CDATA[EroGetter With Your Favorite Site!]]></title>
     <link href="http://masarakki.github.com/blog/2012/09/18/erogetter-with-your-favorite-site/"/>
     <updated>2012-09-18T08:06:00+09:00</updated>
     <id>http://masarakki.github.com/blog/2012/09/18/erogetter-with-your-favorite-site</id>
@@ -898,7 +898,7 @@ Processing by PostsController#create as */*
 </ul>
 
 
-<p>今回追加するサイトは <strong>http://example.com/archives/\d.html えろいぐざんぷるどっとこむ</strong> とします。</p>
+<p>今回追加するサイトは <strong><a href="http://example.com/archives/\d.html">http://example.com/archives/\d.html</a> えろいぐざんぷるどっとこむ</strong> とします。</p>
 
 <h4>ダウンロード</h4>
 
@@ -1056,7 +1056,7 @@ pushしてPull Requestで完成です!</p>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[how to use EroGetter]]></title>
+    <title type="html"><![CDATA[How to Use EroGetter]]></title>
     <link href="http://masarakki.github.com/blog/2012/09/16/how-to-use-ero-getter/"/>
     <updated>2012-09-16T18:12:00+09:00</updated>
     <id>http://masarakki.github.com/blog/2012/09/16/how-to-use-ero-getter</id>
@@ -1139,11 +1139,11 @@ rackup -p 9393
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[remove uploaded files in Rails (with unicorn)]]></title>
+    <title type="html"><![CDATA[Remove Uploaded Files in Rails (With Unicorn)]]></title>
     <link href="http://masarakki.github.com/blog/2012/09/15/remove-uploaded-files-in-rails-with-unicorn/"/>
     <updated>2012-09-15T15:19:00+09:00</updated>
     <id>http://masarakki.github.com/blog/2012/09/15/remove-uploaded-files-in-rails-with-unicorn</id>
-    <content type="html"><![CDATA[<p>Rails + unicorn環境でファイルアップロードを扱うと /tmp/RackMultipart&#8230; というファイルが作られなかなか消えません。
+    <content type="html"><![CDATA[<p>Rails + unicorn環境でファイルアップロードを扱うと /tmp/RackMultipart&hellip; というファイルが作られなかなか消えません。
 UploadedFileクラスの中身はTempfileなので</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -1173,7 +1173,7 @@ UploadedFileクラスの中身はTempfileなので</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>このままッ!! nilを! こいつの! @tempfileに&#8230;&#8230;&#8230; つっこんで! 殴り抜けるッ!</p>
+<p>このままッ!! nilを! こいつの! @tempfileに&hellip;&hellip;&hellip; つっこんで! 殴り抜けるッ!</p>
 
 <p>これで/tmpが無限に肥大化することはなくなるようです</p>
 ]]></content>
@@ -1266,7 +1266,7 @@ UploadedFileクラスの中身はTempfileなので</p>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[octopressのテスト]]></title>
+    <title type="html"><![CDATA[Octopressのテスト]]></title>
     <link href="http://masarakki.github.com/blog/2012/09/09/octopress/"/>
     <updated>2012-09-09T01:13:00+09:00</updated>
     <id>http://masarakki.github.com/blog/2012/09/09/octopress</id>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: rspec | masarakki's blog]]></title>
   <link href="http://masarakki.github.com/blog/categories/rspec/atom.xml" rel="self"/>
   <link href="http://masarakki.github.com/"/>
-  <updated>2013-05-20T06:06:25+09:00</updated>
+  <updated>2013-12-25T19:50:48+09:00</updated>
   <id>http://masarakki.github.com/</id>
   <author>
     <name><![CDATA[masarakki]]></name>
@@ -26,7 +26,7 @@
 <h4>helper</h4>
 
 <p>```ruby
-require 'action_view'
+require &lsquo;action_view&rsquo;
 module BootstrapHelpers
   include ActionView::Helpers::TagHelper
   def actions(&amp;block)</p>
@@ -55,7 +55,7 @@ ActionView::Helpers.send(:include, BootstrapHelpers)
 describe BootstrapHelpers
   include BootstrapHelpers</p>
 
-<p>  it "div.form-actionsで囲まれる" do</p>
+<p>  it &ldquo;div.form-actionsで囲まれる&rdquo; do</p>
 
 <pre><code> tag = actions do
     'hoge'

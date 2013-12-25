@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ero | masarakki's blog]]></title>
   <link href="http://masarakki.github.com/blog/categories/ero/atom.xml" rel="self"/>
   <link href="http://masarakki.github.com/"/>
-  <updated>2013-05-20T06:06:25+09:00</updated>
+  <updated>2013-12-25T19:50:48+09:00</updated>
   <id>http://masarakki.github.com/</id>
   <author>
     <name><![CDATA[masarakki]]></name>
@@ -37,7 +37,7 @@
 </ul>
 
 
-<p>今回追加するサイトは <strong>http://example.com/archives/\d.html えろいぐざんぷるどっとこむ</strong> とします。</p>
+<p>今回追加するサイトは <strong><a href="http://example.com/archives/\d.html">http://example.com/archives/\d.html</a> えろいぐざんぷるどっとこむ</strong> とします。</p>
 
 <h4>ダウンロード</h4>
 
@@ -71,7 +71,7 @@ wget http://example.com/archives/1234567.html -o spec/samples/ero_example/sample
 <p>```ruby
 describe EroExample do                                     # クラス名を変更
   subject { @dl }
-  let(:url) { 'http://example.com/archives/1234567.html' } # urlを変更
+  let(:url) { &lsquo;<a href="http://example.com/archives/1234567.html">http://example.com/archives/1234567.html</a>&rsquo; } # urlを変更
   before do</p>
 
 <pre><code>FileUtils.stub(:mkdir_p)
@@ -80,8 +80,8 @@ fake(:get, url, 'ero_example/sample.html')             # サンプルファイ�
 </code></pre>
 
 <p>  end
-  its(:sub_directory) { should == '1234567' }              # サブディレクトリ名を変更
-  its("targets.count") { should == 26 }                    # サンプルファイルの画像数に変更
+  its(:sub_directory) { should == &lsquo;1234567&rsquo; }              # サブディレクトリ名を変更
+  its(&ldquo;targets.count&rdquo;) { should == 26 }                    # サンプルファイルの画像数に変更
 end
 ```</p>
 
@@ -104,9 +104,9 @@ end
 
 <p>```ruby
 class EroExample &lt; EroGetter::Base
-  name 'えろいぐざんぷるどっとこむ'
-  url %r{http://example.com/archives/\d+.html}
-  target "a > img.ero-file" do |tag|</p>
+  name &lsquo;えろいぐざんぷるどっとこむ&rsquo;
+  url %r{<a href="http://example.com/archives/\d+.html">http://example.com/archives/\d+.html</a>}
+  target &ldquo;a > img.ero-file&rdquo; do |tag|</p>
 
 <pre><code> tag.parent[:href] if path.parent[:href] =~ /jpe?g|gif|png/
 </code></pre>
@@ -118,7 +118,7 @@ class EroExample &lt; EroGetter::Base
 </code></pre>
 
 <p>  end
-  filename {|attr| "%04d%s" % [attr[:index], attr[:ext]] }
+  filename {|attr| &ldquo;%04d%s&rdquo; % [attr[:index], attr[:ext]] }
 end
 ```</p>
 
@@ -142,7 +142,7 @@ targetで取得したい画像のurlを集める方法を指定します。</p>
 <p><em>lib/downloader/nijigazou_sokuhou.rb</em> を参考にしましょう。</p>
 
 <p>```ruby
-  connection ['a[rel=prev]', 'a[rel=next]'] do |path|</p>
+  connection [&lsquo;a[rel=prev]&rsquo;, &lsquo;a[rel=next]&rsquo;] do |path|</p>
 
 <pre><code>path.text.match(Regexp.escape(title_part))
 </code></pre>

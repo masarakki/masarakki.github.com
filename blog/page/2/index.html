@@ -9,7 +9,8 @@
   <meta name="author" content="masarakki">
 
   
-  <meta name="description" content="キチガイRubyistの技術ブログ">
+  <meta name="description" content="快適エロ生活はEroGetterで。 EroGetterとは? エロ画像収集に特化したダウンローダーです。
+汎用ダウンローダーを使う場合に必要になる、余計なURLを除外したり、保存場所を指定したりといった面倒な部分を極力排除してあります。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,31 +21,12 @@
   
   <link rel="canonical" href="http://masarakki.github.com/blog/page/2">
   <link href="/favicon.png" rel="icon">
-  <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/stylesheets/syntax/syntax.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <style type="text/css">
-    body {
-      padding-bottom: 40px;
-    }
-    h1 {
-      margin-bottom: 15px;
-    }
-    img {
-      max-width: 100%;
-    }
-    .sharing, .meta, .pager {
-      margin: 20px 0px 20px 0px;
-    }
-    .page-footer p {
-      text-align: center;
-    }
-  </style>
-  <script src="/javascripts/libs/jquery.js"></script>
-  <script src="/javascripts/libs/modernizr-2.0.js"></script>
-  <script src="/javascripts/libs/bootstrap.js"></script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="masarakki's blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   
   
   <script type="text/javascript">
@@ -63,52 +45,36 @@
 </head>
 
 <body   >
-  <nav role="navigation"><div class="navbar">
-  <div class="navbar-inner">
-    <div class="container">
-      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </a>
-
-      <a class="brand" href="/">masarakki's blog</a>
-
-      <div class="nav-collapse">
-        <ul class="nav">
+  <header role="banner">
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:masarakki.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="nav">
   <li><a href="/">Blog</a></li>
   <li><a href="/blog/archives">Archives</a></li>
   <li><a href="/resume">Resume</a></li>
 </ul>
 
-
-        <ul class="nav pull-right" data-subscription="rss">
-          <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-          
-        </ul>
-
-        
-          <form class="pull-right navbar-search" action="http://google.com/search" method="get">
-            <fieldset role="search">
-              <input type="hidden" name="q" value="site:masarakki.github.com" />
-              <input class="search-query" type="text" name="q" results="0" placeholder="Search"/>
-            </fieldset>
-          </form>
-        
-      </div>
-    </div>
-  </div>
-</div>
 </nav>
-  <div class="container">
-    <div class="row-fluid">
-      <div class="span9">
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
   
   
   
     <article>
       
-  <header class="page-header">
+  <header>
     
       <h1 class="entry-title"><a href="/blog/2012/09/16/how-to-use-ero-getter/">How to Use EroGetter</a></h1>
     
@@ -218,7 +184,7 @@ rackup -p 9393
   
     <article>
       
-  <header class="page-header">
+  <header>
     
       <h1 class="entry-title"><a href="/blog/2012/09/15/remove-uploaded-files-in-rails-with-unicorn/">Remove Uploaded Files in Rails (With Unicorn)</a></h1>
     
@@ -243,7 +209,7 @@ rackup -p 9393
   </header>
 
 
-  <div class="entry-content"><p>Rails + unicorn環境でファイルアップロードを扱うと /tmp/RackMultipart&#8230; というファイルが作られなかなか消えません。
+  <div class="entry-content"><p>Rails + unicorn環境でファイルアップロードを扱うと /tmp/RackMultipart&hellip; というファイルが作られなかなか消えません。
 UploadedFileクラスの中身はTempfileなので</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -273,7 +239,7 @@ UploadedFileクラスの中身はTempfileなので</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>このままッ!! nilを! こいつの! @tempfileに&#8230;&#8230;&#8230; つっこんで! 殴り抜けるッ!</p>
+<p>このままッ!! nilを! こいつの! @tempfileに&hellip;&hellip;&hellip; つっこんで! 殴り抜けるッ!</p>
 
 <p>これで/tmpが無限に肥大化することはなくなるようです</p>
 </div>
@@ -286,7 +252,7 @@ UploadedFileクラスの中身はTempfileなので</p>
   
     <article>
       
-  <header class="page-header">
+  <header>
     
       <h1 class="entry-title"><a href="/blog/2012/09/10/rspec_for_helper_method/">ヘルパーメソッドのspecってどう書くの?</a></h1>
     
@@ -399,7 +365,7 @@ UploadedFileクラスの中身はTempfileなので</p>
   
     <article>
       
-  <header class="page-header">
+  <header>
     
       <h1 class="entry-title"><a href="/blog/2012/09/09/octopress/">Octopressのテスト</a></h1>
     
@@ -438,30 +404,30 @@ UploadedFileクラスの中身はTempfileなので</p>
 
     </article>
   
-  <ul class="pager">
+  <div class="pagination">
     
-    <li><a href="/blog/archives">Blog Archives</a></li>
+    <a href="/blog/archives">Blog Archives</a>
     
-    <li class="next"><a href="/">Newer &rarr;</a></li>
+    <a class="next" href="/">Newer &rarr;</a>
     
-  </ul>
+  </div>
 </div>
-<aside class="sidebar-nav span3">
+<aside class="sidebar">
   
-    <section class="well">
-  <ul id="recent_posts" class="nav nav-list">
-    <li class="nav-header">Recent Posts</li>
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2013/03/22/java-ja-kowai/">java-ja Kowai</a>
+        <a href="/blog/2013/03/22/java-ja-kowai/">Java-ja Kowai</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/03/16/make-url-cool/">make url cool</a>
+        <a href="/blog/2013/03/16/make-url-cool/">Make Url Cool</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/02/14/supervisor-with-rvm/">run ruby on supervisor with RVM</a>
+        <a href="/blog/2013/02/14/supervisor-with-rvm/">Run Ruby on Supervisor With RVM</a>
       </li>
     
       <li class="post">
@@ -475,9 +441,9 @@ UploadedFileクラスの中身はTempfileなので</p>
   </ul>
 </section>
 
-<section class="well">
-  <ul id="gh_repos" class="nav">
-    <li class="nav-header">GitHub Repos</li>
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
     <li class="loading">Status updating&#8230;</li>
   </ul>
   
@@ -485,6 +451,14 @@ UploadedFileクラスの中身はTempfileなので</p>
   
   <script type="text/javascript">
     $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
         github.showRepos({
             user: 'masarakki',
             count: 6,
@@ -493,7 +467,7 @@ UploadedFileクラスの中身はTempfileなので</p>
         });
     });
   </script>
-  <script src="/javascripts/asides/github.js" type="text/javascript"> </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
 </section>
 
 
@@ -514,7 +488,7 @@ UploadedFileクラスの中身はTempfileなので</p>
 
     </div>
   </div>
-  <footer role="contentinfo" class="page-footer"><hr>
+  <footer role="contentinfo"><hr>
 <p>
   Copyright &copy; 2013 - masarakki -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
@@ -542,7 +516,7 @@ UploadedFileクラスの中身はTempfileなので</p>
       var twitterWidgets = document.createElement('script');
       twitterWidgets.type = 'text/javascript';
       twitterWidgets.async = true;
-      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
       document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
     })();
   </script>

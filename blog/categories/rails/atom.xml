@@ -4,7 +4,7 @@
   <title><![CDATA[Category: rails | masarakki's blog]]></title>
   <link href="http://masarakki.github.com/blog/categories/rails/atom.xml" rel="self"/>
   <link href="http://masarakki.github.com/"/>
-  <updated>2013-05-20T06:06:25+09:00</updated>
+  <updated>2013-12-25T19:50:48+09:00</updated>
   <id>http://masarakki.github.com/</id>
   <author>
     <name><![CDATA[masarakki]]></name>
@@ -65,7 +65,7 @@ Processing by PostsController#create as */*
 
 <p>上手いことフィルタされますね。</p>
 
-<p>Rails の標準的なPOSTパラメータ形式の :post => {:password => "abc123"} はどうでしょうか</p>
+<p>Rails の標準的なPOSTパラメータ形式の :post => {:password => &ldquo;abc123&rdquo;} はどうでしょうか</p>
 
 <pre><code>Started POST "/posts" for 127.0.0.1 at 2012-09-20 05:22:33 +0900
 Processing by PostsController#create as */*
@@ -153,7 +153,7 @@ v = json.to_s
 
 <p>:json が渡ってきた場合は filter とかする前に JSON.parse してハッシュにしたい。
 そうすれば普通に filter_parameters += [:password, :user_id] を指定するだけで、
-:post => {:password => "abc123"} がフィルタできたのと同様にフィルタできるはず。</p>
+:post => {:password => &ldquo;abc123&rdquo;} がフィルタできたのと同様にフィルタできるはず。</p>
 
 <p>次はこれを調べる。</p>
 ]]></content>
@@ -164,7 +164,7 @@ v = json.to_s
     <link href="http://masarakki.github.com/blog/2012/09/15/remove-uploaded-files-in-rails-with-unicorn/"/>
     <updated>2012-09-15T15:19:00+09:00</updated>
     <id>http://masarakki.github.com/blog/2012/09/15/remove-uploaded-files-in-rails-with-unicorn</id>
-    <content type="html"><![CDATA[<p>Rails + unicorn環境でファイルアップロードを扱うと /tmp/RackMultipart... というファイルが作られなかなか消えません。
+    <content type="html"><![CDATA[<p>Rails + unicorn環境でファイルアップロードを扱うと /tmp/RackMultipart&hellip; というファイルが作られなかなか消えません。
 UploadedFileクラスの中身はTempfileなので
 <code>ruby
 params[:file].close(true)
@@ -186,7 +186,7 @@ def remove_uploaded(file)
 end
 </code></p>
 
-<p>このままッ!! nilを! こいつの! @tempfileに......... つっこんで! 殴り抜けるッ!</p>
+<p>このままッ!! nilを! こいつの! @tempfileに&hellip;&hellip;&hellip; つっこんで! 殴り抜けるッ!</p>
 
 <p>これで/tmpが無限に肥大化することはなくなるようです</p>
 ]]></content>
@@ -205,7 +205,7 @@ end
 <h4>helper</h4>
 
 <p>```ruby
-require 'action_view'
+require &lsquo;action_view&rsquo;
 module BootstrapHelpers
   include ActionView::Helpers::TagHelper
   def actions(&amp;block)</p>
@@ -234,7 +234,7 @@ ActionView::Helpers.send(:include, BootstrapHelpers)
 describe BootstrapHelpers
   include BootstrapHelpers</p>
 
-<p>  it "div.form-actionsで囲まれる" do</p>
+<p>  it &ldquo;div.form-actionsで囲まれる&rdquo; do</p>
 
 <pre><code> tag = actions do
     'hoge'
