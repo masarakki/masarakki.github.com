@@ -1,0 +1,390 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>不自由なデプロイを強いられてる人のための Capistrano-env ってgemを作った - masarakki's blog</title>
+  <meta name="author" content="masarakki">
+
+  
+  <meta name="description" content="capistrano-env ってgemを作った 不自由なデプロイを強いられているんだッ すべての人間は大きく2種類に分割でき、それは自由なデプロイを許された人間と、不自由なデプロイを強いられた人間です。 不自由なデプロイを強いられる環境とは次のような環境のことをいいます。 &hellip;">
+  <meta name="keywords" content="ruby,gem,deploy,capistrano">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://masarakki.github.com/blog/2013/12/25/capistrano-env">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="masarakki's blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20908831-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner">
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:masarakki.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="nav">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/resume">Resume</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">不自由なデプロイを強いられてる人のための Capistrano-env ってgemを作った</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-25T19:52:42+09:00" pubdate data-updated="true">Dec 25<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>capistrano-env ってgemを作った</p>
+
+<h2>不自由なデプロイを強いられているんだッ</h2>
+
+<p>すべての人間は大きく2種類に分割でき、それは自由なデプロイを許された人間と、不自由なデプロイを強いられた人間です。</p>
+
+<p>不自由なデプロイを強いられる環境とは次のような環境のことをいいます。</p>
+
+<ul>
+<li>自動デプロイとかDevOpsとかの文化がない</li>
+<li>特定の人しかデプロイの権限がない</li>
+<li>その特定の人が現代的なクラウド文化を知らない</li>
+<li>偉い人が手動神話を信仰している</li>
+<li>システムを動かすのに絶対必須な情報を開発者が知ってはいけない</li>
+</ul>
+
+
+<p>以上はすべて妄想ですがもしかしたらこんな組織が実在するのかもしれません。
+世の中には非常に便利なデプロイツールがあるのにこのような組織では上手く使うことが出来ません。</p>
+
+<p>このgemはこのような不自由なデプロイを駆逐し、自由なデプロイの尖兵として賭けの攻勢に出るための武器です。</p>
+
+<h2>秘密情報という曲者</h2>
+
+<p>組織によっては開発者が知ってはいけない情報が設定されている場合があります。
+DBサーバのパスワードやSALTなど、まあこのへんは納得できるんですが、
+自分たちのAPIサーバのドメイン名を知らなかったり、何台のサーバで動いてるのかすら知ってはいけない、
+なんて組織がもしかしたらあるかもしれません。</p>
+
+<p>このあたりの情報は普通 <code>config/database.yml</code> とかに書いてリポジトリにコミットするわけですが、
+秘密情報を含むファイルは作れないのでコミットできないことになります。
+以前はどのようにしていたかというと、 <code>config/database.yml.template</code> とかのファイルをコミットし、
+ローカルやテスト環境ではそれを <code>config/database.yml</code> にリネームするし、
+本番にデプロイするときはインフラ担当が <em>手動で</em> 正しい情報に書き換えて配置します。</p>
+
+<p>はいこんな思想で自動化できるわけがないですよね。
+それどころかフレームワーク標準のファイルが存在しないという状況は開発者のCIすら阻害されてしまいます。</p>
+
+<h2>heroku的解決</h2>
+
+<p>設定をコードから分離するための仕組みとして、
+herokuにはアプリケーションごとにconfigが設定できるようになってます。
+アプリケーションからは環境変数を通してその値にアクセスできます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>heroku config:set FOO=123</span></code></pre></td></tr></table></div></figure>
+
+
+<p>こんなかんじに設定すると</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;FOO&#39;</span><span class="o">]</span> <span class="c1"># =&gt; 123</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>でアクセスできます。便利!
+これなら同じコードを全く変更すること無く別のherokuアプリケーションとして動かすこともできますね。</p>
+
+<h2>capistranoでENV設定</h2>
+
+<p>capistranoでデプロイするときに、環境変数付きでサーバを起動することができます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">set</span> <span class="ss">:default_environment</span><span class="p">,</span> <span class="no">ENV</span><span class="o">.</span><span class="n">select</span><span class="p">{</span> <span class="o">|</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="o">|</span> <span class="n">k</span> <span class="o">=~</span> <span class="sr">/^MYAPP_/</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>とか書けば <code>MYAPP_</code> から始まる環境変数を全部デプロイ時に渡すことができます。
+アプリ側は ymlファイルの値が書いてある部分を <code>&lt;%= ENV['MYAPP_XXX'] %&gt;</code> とかに置き換えて、
+ymlを読む前に一回 Erb を通すようにすれば完成です。</p>
+
+<p>これでデプロイ担当者のマシンに環境変数を設定し、
+そのマシンからcapistranoで自動化されたデプロイができるようになりました。</p>
+
+<p>develop/test/staging なんかの環境は別に秘密じゃないとおもうのでymlに即値で書いてしまいましょう。</p>
+
+<h2>unicornリスタート問題</h2>
+
+<p>unicornは一瞬もサービスが途切れること無くサーバのリスタートができるのが特徴ですが、
+これはシグナルを送ることによって実現しているので、
+<em>ENVを使った場合はリスタートしても設定の変更ができない</em> という問題があります。</p>
+
+<p>ENVを更新しようとすると一旦unicornをstopしてstartしなくてはいけません。
+これではunicornの良さが損なわれるのでなるべくやりたくない方法です。</p>
+
+<p>ここまで辿り着いた段階でもう既存の方法では厳しいと思いgemを作りました。</p>
+
+<h2>capisrano-env がやっていること</h2>
+
+<p>やってることは単純です。
+環境変数を付けてデプロイするのをやめて、
+代わりに <em>環境変数を設定するファイル</em> を一緒にデプロイします。
+unicornをリスタートする前にも環境変数ファイルを毎回デプロイします。
+動かすアプリケーションがRailsの場合は、
+勝手にそのファイルを読み込んでrailsのブート中に環境変数を書き換えます。
+<code>config/application.rb</code> などでymlの読み込みを始める前にはすでに環境変数が設定された状態になっています。</p>
+
+<p>環境変数を設定するコードを実行するっていう気持ち悪さはありますが、
+不自由な環境にいながら自動デプロイで幸せになるためにはこの方法しか考えられませんでした。
+まぁ不自由な環境が実在するかどうかは定かではありませんが。</p>
+
+<h2>使いかた</h2>
+
+<p>deploy.rb</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;capistrano-env&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">capenv</span><span class="o">.</span><span class="n">use</span> <span class="k">do</span> <span class="o">|</span><span class="n">env</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">env</span><span class="o">.</span><span class="n">add</span> <span class="sr">/^MYAPP_/</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ここまで書いててこれ自分で設定しなくて default_environment 拾ってくればいいんじゃねえのと思った</p>
+
+<p>あと環境変数を設定するコードを吐く部分はフォーマッタって形で切り出してるから PhpFormatter とか作りたい人作っていいよ</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">masarakki</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-25T19:52:42+09:00" pubdate data-updated="true">Dec 25<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ruby/'>ruby</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://masarakki.github.com/blog/2013/12/25/capistrano-env/" data-via="masarakki" data-counturl="http://masarakki.github.com/blog/2013/12/25/capistrano-env/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/03/22/java-ja-kowai/" title="Previous Post: java-ja Kowai">&laquo; java-ja Kowai</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/12/25/capistrano-env/">不自由なデプロイを強いられてる人のための Capistrano-env ってgemを作った</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/22/java-ja-kowai/">Java-ja Kowai</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/16/make-url-cool/">Make Url Cool</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/14/supervisor-with-rvm/">Run Ruby on Supervisor With RVM</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/04/how-to-travis-a-gem-with-c-extension/">Travis CIでrubyのC拡張が入ったgemのテストをする方法</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/masarakki">@masarakki</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'masarakki',
+            count: 6,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/107002572043873162468?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><hr>
+<p>
+  Copyright &copy; 2013 - masarakki -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

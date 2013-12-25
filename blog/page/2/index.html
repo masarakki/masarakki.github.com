@@ -9,8 +9,9 @@
   <meta name="author" content="masarakki">
 
   
-  <meta name="description" content="快適エロ生活はEroGetterで。 EroGetterとは? エロ画像収集に特化したダウンローダーです。
-汎用ダウンローダーを使う場合に必要になる、余計なURLを除外したり、保存場所を指定したりといった面倒な部分を極力排除してあります。 &hellip;">
+  <meta name="description" content="EroGetter対応サイトを増やす サイト定義を書くことで対応サイトを増やすことができます。 準備するもの まともな(ry
+対象サイト 記事urlの正規表現
+サイト名 エロにかける情熱 今回追加するサイトは http://example.com/archives/\d.html &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -70,6 +71,214 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/09/18/erogetter-with-your-favorite-site/">EroGetter With Your Favorite Site!</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-18T08:06:00+09:00" pubdate data-updated="true">Sep 18<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>EroGetter対応サイトを増やす</h2>
+
+<p>サイト定義を書くことで対応サイトを増やすことができます。</p>
+
+<h3>準備するもの</h3>
+
+<ul>
+<li>まともな(ry</li>
+<li>対象サイト
+
+<ul>
+<li>記事urlの正規表現</li>
+<li>サイト名</li>
+</ul>
+</li>
+<li>エロにかける情熱</li>
+</ul>
+
+
+<p>今回追加するサイトは <strong><a href="http://example.com/archives/\d.html">http://example.com/archives/\d.html</a> えろいぐざんぷるどっとこむ</strong> とします。</p>
+
+<h4>ダウンロード</h4>
+
+<pre><code>git clone git://github.com/masarakki/ero_getter.git
+cd ero_getter
+bundle install
+git checkout -b add_example_dot_com
+</code></pre>
+
+<h4>クラス名の決定</h4>
+
+<p>サイト名が <strong>えろいぐざんぷるどっとこむ</strong> なのでクラス名は <strong>EroExample</strong> とします。
+通例に従って、ファイル名などは <strong>ero_example</strong> のようなスネークケースになります。</p>
+
+<h4>サンプルファイルの追加</h4>
+
+<pre><code>mkdir spec/samples/ero_example
+wget http://example.com/archives/1234567.html -o spec/samples/ero_example/sample.html
+</code></pre>
+
+<p>その1〜 のように連番になっているサイトの場合は先頭、中間、最後のファイルをそれぞれ別名で保存してください。</p>
+
+<h4>テストの追加</h4>
+
+<p><em>spec/downloader/</em> にある他のサイト定義のファイルをコピーして、
+<strong>spec/downloader/ero_example_spec.rb</strong> を作ります。
+連番サイトは <em>nijigazou_sokuhou_spec.rb</em>、 そうでないサイトはそれ以外のファイルがいいでしょう。</p>
+
+<p>ファイルを開いてそれっぽいところを変更します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">describe</span> <span class="no">EroExample</span> <span class="k">do</span>                                     <span class="c1"># クラス名を変更</span>
+</span><span class='line'>  <span class="n">subject</span> <span class="p">{</span> <span class="vi">@dl</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">let</span><span class="p">(</span><span class="ss">:url</span><span class="p">)</span> <span class="p">{</span> <span class="s1">&#39;http://example.com/archives/1234567.html&#39;</span> <span class="p">}</span> <span class="c1"># urlを変更</span>
+</span><span class='line'>  <span class="n">before</span> <span class="k">do</span>
+</span><span class='line'>    <span class="no">FileUtils</span><span class="o">.</span><span class="n">stub</span><span class="p">(</span><span class="ss">:mkdir_p</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@dl</span> <span class="o">=</span> <span class="no">EroExample</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>                              <span class="c1"># クラスを変更</span>
+</span><span class='line'>    <span class="n">fake</span><span class="p">(</span><span class="ss">:get</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="s1">&#39;ero_example/sample.html&#39;</span><span class="p">)</span>             <span class="c1"># サンプルファイルを変更</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">its</span><span class="p">(</span><span class="ss">:sub_directory</span><span class="p">)</span> <span class="p">{</span> <span class="n">should</span> <span class="o">==</span> <span class="s1">&#39;1234567&#39;</span> <span class="p">}</span>              <span class="c1"># サブディレクトリ名を変更</span>
+</span><span class='line'>  <span class="n">its</span><span class="p">(</span><span class="s2">&quot;targets.count&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="n">should</span> <span class="o">==</span> <span class="mi">26</span> <span class="p">}</span>                    <span class="c1"># サンプルファイルの画像数に変更</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<pre><code>rspec spec/downloader/ero_example_spec.rb
+</code></pre>
+
+<p>を実行してFailがひとつも出なくなるようにサイト定義をいじります。</p>
+
+<p>別のターミナルを立てて</p>
+
+<pre><code>bundle exec guard start
+</code></pre>
+
+<p>でguardを動かしてCIすることもできます。</p>
+
+<h4>サイト定義の追加</h4>
+
+<p><strong>lib/downloader/ero_example.rb</strong> に、 <strong>EroGetter::Base</strong> を継承したクラスを作ります。
+対象サイトがLivedoorBlogの場合は、 <strong>EroGetter::Livedoor</strong> が使える場合もあります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">EroExample</span> <span class="o">&lt;</span> <span class="no">EroGetter</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="nb">name</span> <span class="s1">&#39;えろいぐざんぷるどっとこむ&#39;</span>
+</span><span class='line'>  <span class="n">url</span> <span class="sr">%r{http://example.com/archives/\d+.html}</span>
+</span><span class='line'>  <span class="n">target</span> <span class="s2">&quot;a &gt; img.ero-file&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">tag</span><span class="o">|</span>
+</span><span class='line'>     <span class="n">tag</span><span class="o">.</span><span class="n">parent</span><span class="o">[</span><span class="ss">:href</span><span class="o">]</span> <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">parent</span><span class="o">[</span><span class="ss">:href</span><span class="o">]</span> <span class="o">=~</span> <span class="sr">/jpe?g|gif|png/</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">sub_directory</span> <span class="k">do</span>
+</span><span class='line'>     <span class="n">url</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sr">/(\d).html/</span><span class="p">)</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>  <span class="n">filename</span> <span class="p">{</span><span class="o">|</span><span class="kp">attr</span><span class="o">|</span> <span class="s2">&quot;%04d%s&quot;</span> <span class="o">%</span> <span class="o">[</span><span class="kp">attr</span><span class="o">[</span><span class="ss">:index</span><span class="o">]</span><span class="p">,</span> <span class="kp">attr</span><span class="o">[</span><span class="ss">:ext</span><span class="o">]]</span> <span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>肝になるのは <strong>target</strong> のところです。
+targetで取得したい画像のurlを集める方法を指定します。</p>
+
+<p>targetの引数には取得したいタグをcssで指定します。
+そのタグに対してブロックの処理をしてurlを取得します。
+最終的に、 <strong>画像のurlの文字列</strong> を集めなければならないことに注意してください。
+(ただタグを返すだけだとurl文字列ではないということです)</p>
+
+<p>この例の場合、aタグ直下の、クラスにero-fileが付けられたimgタグを全部持ってきて、
+その親要素のhref属性が画像ファイルなら、そのhrefを文字列として返す、という条件になります</p>
+
+<p>rspecを走らせて、取得した画像の件数が一致するまでtargetを調整しましょう。</p>
+
+<h4>連番サイト</h4>
+
+<p>その1〜 など連番で記事が作られるサイトは、ひとつの記事から全てのページを取得する設定が可能です。</p>
+
+<p><em>lib/downloader/nijigazou_sokuhou.rb</em> を参考にしましょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">connection</span> <span class="o">[</span><span class="s1">&#39;a[rel=prev]&#39;</span><span class="p">,</span> <span class="s1">&#39;a[rel=next]&#39;</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">path</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">path</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="no">Regexp</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">title_part</span><span class="p">))</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">title_part</span>
+</span><span class='line'>     <span class="n">title</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sr">/(.+?)(その.+)?$/</span><span class="p">)</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>connection</strong> で前後のページへのリンクをcssの配列で指定します。
+ブロックを渡してtrue/falseを返すことで、そのリンクを本当に取得するかどうかを調整できます。
+この場合、タイトルの「その〜」より前の部分が一致したら本当に取得する事になります。</p>
+
+<p>rspecも <em>spec/downloader/nijigazou_sokuhou_spec.rb</em> を参考に、
+前後ページが正しく取得できるか、次がなければnilになるか、をテストしましょう。</p>
+
+<h4>Pull Request</h4>
+
+<p>あとはPull Requestすれば取り込まれます。
+Pull Requestの前にはコミットをひとつにまとめるとかっこいいですよ。</p>
+
+<pre><code>git rebase -i HEAD~10 (十分大きい数字)
+</code></pre>
+
+<p>コミットIDの前の文字列を <strong>s</strong> にすると、その前のコミットと合成されます。
+作業をひとつのコミットにまとめて、コミットメッセージを適切なものに直し、
+pushしてPull Requestで完成です!</p>
+
+<p><em>Enjoy!</em></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -419,6 +628,10 @@ UploadedFileクラスの中身はTempfileなので</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/12/25/capistrano-env/">不自由なデプロイを強いられてる人のための Capistrano-env ってgemを作った</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/03/22/java-ja-kowai/">Java-ja Kowai</a>
       </li>
     
@@ -432,10 +645,6 @@ UploadedFileクラスの中身はTempfileなので</p>
     
       <li class="post">
         <a href="/blog/2012/11/04/how-to-travis-a-gem-with-c-extension/">Travis CIでrubyのC拡張が入ったgemのテストをする方法</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/30/home-server-aboned/">自宅鯖があぼーんした</a>
       </li>
     
   </ul>

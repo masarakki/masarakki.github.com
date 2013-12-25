@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ruby | masarakki's blog]]></title>
   <link href="http://masarakki.github.com/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://masarakki.github.com/"/>
-  <updated>2013-12-25T19:50:48+09:00</updated>
+  <updated>2013-12-25T21:16:29+09:00</updated>
   <id>http://masarakki.github.com/</id>
   <author>
     <name><![CDATA[masarakki]]></name>
@@ -12,6 +12,130 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[不自由なデプロイを強いられてる人のための capistrano-env ってgemを作った]]></title>
+    <link href="http://masarakki.github.com/blog/2013/12/25/capistrano-env/"/>
+    <updated>2013-12-25T19:52:42+09:00</updated>
+    <id>http://masarakki.github.com/blog/2013/12/25/capistrano-env</id>
+    <content type="html"><![CDATA[<p>capistrano-env ってgemを作った</p>
+
+<h2>不自由なデプロイを強いられているんだッ</h2>
+
+<p>すべての人間は大きく2種類に分割でき、それは自由なデプロイを許された人間と、不自由なデプロイを強いられた人間です。</p>
+
+<p>不自由なデプロイを強いられる環境とは次のような環境のことをいいます。</p>
+
+<ul>
+<li>自動デプロイとかDevOpsとかの文化がない</li>
+<li>特定の人しかデプロイの権限がない</li>
+<li>その特定の人が現代的なクラウド文化を知らない</li>
+<li>偉い人が手動神話を信仰している</li>
+<li>システムを動かすのに絶対必須な情報を開発者が知ってはいけない</li>
+</ul>
+
+
+<p>以上はすべて妄想ですがもしかしたらこんな組織が実在するのかもしれません。
+世の中には非常に便利なデプロイツールがあるのにこのような組織では上手く使うことが出来ません。</p>
+
+<p>このgemはこのような不自由なデプロイを駆逐し、自由なデプロイの尖兵として賭けの攻勢に出るための武器です。</p>
+
+<h2>秘密情報という曲者</h2>
+
+<p>組織によっては開発者が知ってはいけない情報が設定されている場合があります。
+DBサーバのパスワードやSALTなど、まあこのへんは納得できるんですが、
+自分たちのAPIサーバのドメイン名を知らなかったり、何台のサーバで動いてるのかすら知ってはいけない、
+なんて組織がもしかしたらあるかもしれません。</p>
+
+<p>このあたりの情報は普通 <code>config/database.yml</code> とかに書いてリポジトリにコミットするわけですが、
+秘密情報を含むファイルは作れないのでコミットできないことになります。
+以前はどのようにしていたかというと、 <code>config/database.yml.template</code> とかのファイルをコミットし、
+ローカルやテスト環境ではそれを <code>config/database.yml</code> にリネームするし、
+本番にデプロイするときはインフラ担当が <em>手動で</em> 正しい情報に書き換えて配置します。</p>
+
+<p>はいこんな思想で自動化できるわけがないですよね。
+それどころかフレームワーク標準のファイルが存在しないという状況は開発者のCIすら阻害されてしまいます。</p>
+
+<h2>heroku的解決</h2>
+
+<p>設定をコードから分離するための仕組みとして、
+herokuにはアプリケーションごとにconfigが設定できるようになってます。
+アプリケーションからは環境変数を通してその値にアクセスできます。</p>
+
+<p><code>
+heroku config:set FOO=123
+</code></p>
+
+<p>こんなかんじに設定すると</p>
+
+<p><code>ruby
+ENV['FOO'] # =&gt; 123
+</code></p>
+
+<p>でアクセスできます。便利!
+これなら同じコードを全く変更すること無く別のherokuアプリケーションとして動かすこともできますね。</p>
+
+<h2>capistranoでENV設定</h2>
+
+<p>capistranoでデプロイするときに、環境変数付きでサーバを起動することができます。</p>
+
+<p><code>ruby
+set :default_environment, ENV.select{ |k,v| k =~ /^MYAPP_/ }
+</code></p>
+
+<p>とか書けば <code>MYAPP_</code> から始まる環境変数を全部デプロイ時に渡すことができます。
+アプリ側は ymlファイルの値が書いてある部分を <code>&lt;%= ENV['MYAPP_XXX'] %&gt;</code> とかに置き換えて、
+ymlを読む前に一回 Erb を通すようにすれば完成です。</p>
+
+<p>これでデプロイ担当者のマシンに環境変数を設定し、
+そのマシンからcapistranoで自動化されたデプロイができるようになりました。</p>
+
+<p>develop/test/staging なんかの環境は別に秘密じゃないとおもうのでymlに即値で書いてしまいましょう。</p>
+
+<h2>unicornリスタート問題</h2>
+
+<p>unicornは一瞬もサービスが途切れること無くサーバのリスタートができるのが特徴ですが、
+これはシグナルを送ることによって実現しているので、
+<em>ENVを使った場合はリスタートしても設定の変更ができない</em> という問題があります。</p>
+
+<p>ENVを更新しようとすると一旦unicornをstopしてstartしなくてはいけません。
+これではunicornの良さが損なわれるのでなるべくやりたくない方法です。</p>
+
+<p>ここまで辿り着いた段階でもう既存の方法では厳しいと思いgemを作りました。</p>
+
+<h2>capisrano-env がやっていること</h2>
+
+<p>やってることは単純です。
+環境変数を付けてデプロイするのをやめて、
+代わりに <em>環境変数を設定するファイル</em> を一緒にデプロイします。
+unicornをリスタートする前にも環境変数ファイルを毎回デプロイします。
+動かすアプリケーションがRailsの場合は、
+勝手にそのファイルを読み込んでrailsのブート中に環境変数を書き換えます。
+<code>config/application.rb</code> などでymlの読み込みを始める前にはすでに環境変数が設定された状態になっています。</p>
+
+<p>環境変数を設定するコードを実行するっていう気持ち悪さはありますが、
+不自由な環境にいながら自動デプロイで幸せになるためにはこの方法しか考えられませんでした。
+まぁ不自由な環境が実在するかどうかは定かではありませんが。</p>
+
+<h2>使いかた</h2>
+
+<p>deploy.rb</p>
+
+<p>```ruby</p>
+
+<p>require &lsquo;capistrano-env&rsquo;</p>
+
+<p>capenv.use do |env|
+  env.add /^MYAPP_/
+end</p>
+
+<p>```</p>
+
+<p>ここまで書いててこれ自分で設定しなくて default_environment 拾ってくればいいんじゃねえのと思った</p>
+
+<p>あと環境変数を設定するコードを吐く部分はフォーマッタって形で切り出してるから PhpFormatter とか作りたい人作っていいよ</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[run ruby on supervisor with RVM]]></title>
@@ -420,70 +544,6 @@ Linuxでも棒読みができるアプリケーションyukkuriを作った俺�
 <p>たぶん棒読みちゃんより正確なアクセントが付けれるようになった。
 確認は<a href="https://github.com/masarakki/yukkurid">コード</a>を実行してみるか、
 <a href="http://com.nicovideo.jp/community/co600306">ニコ生の放送</a>を見てくださいな。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[yukkurid]]></title>
-    <link href="http://masarakki.github.com/blog/2012/09/22/yukkurid/"/>
-    <updated>2012-09-22T06:59:00+09:00</updated>
-    <id>http://masarakki.github.com/blog/2012/09/22/yukkurid</id>
-    <content type="html"><![CDATA[<p><em>ゆっくりしていってね!</em></p>
-
-<h2>yukkuridとは?</h2>
-
-<p>棒読みちゃん+デーモン</p>
-
-<p>ニコ生をするのに欠かせないの棒読みちゃんというWindowsアプリがありますが、
-もちろんWindowsアプリなのでLinuxでは動きませんしWineで動くとしても動かしたくないですよね。</p>
-
-<p>でもやっぱり棒読み機能がないと不便なので作ってみました。</p>
-
-<p><a href="https://github.com/masarakki/yukkurid">yukkurid</a></p>
-
-<h2>棒読み部分</h2>
-
-<p>棒読みちゃんは内部で<a href="http://www.a-quest.com/">AquesTalk2</a>という読み上げライブラリを使用していて、
-これはWindows版だけでなくMacOS版とLinux版のライブラリも配布されています。
-<strong>(ただし有料)</strong></p>
-
-<p>棒読みにはそんなに機能は必要無いので、ほとんどサンプルファイルをそのままコンパイルして、
-十分実用なバイナリになりました。</p>
-
-<h2>デーモン部分</h2>
-
-<p>sinatraでちょちょっと作って終了です。
-POSTで受け取ったデータを、漢字が読めない棒読みちゃんのためにmecabで読みに変換して、
-棒読みちゃんに渡して吐かれたwavをALSAに食わせる。
-ワンライナーで瞬殺です。</p>
-
-<p>これでPOSTで送信するとコンピュータがゆっくり喋ってくれるようになりました!</p>
-
-<h2>次の展望</h2>
-
-<p>デーモンにさえすれば、実際にニコ生のコメントをchrome extensionから送信して、
-コンピュータが喋ってくれるようになるはずです。
-EroGetterの時もそうだったけどいちいちデーモンにするのがめんどくさいですがしかたないですね・・・</p>
-
-<p>というわけでchrome extensionのコメビュを作るか既存のをどっかからパクってきて繋ぎこみたいと思います。</p>
-
-<p>あとは今だと喋ってる間ブロックするので非同期化と、それにともなってちゃんとしたキューイングを。</p>
-
-<h2>ところで</h2>
-
-<p><a href="http://www.a-quest.com/licence_free.html">非商用の個人の開発ライセンス</a>を買ったのですが、</p>
-
-<ul>
-<li>アプリの機能として、外部ソフトから当社製品ライブラリの機能を呼び出し可能なインターフェースを持たないこと。</li>
-</ul>
-
-
-<p>ってどういうことなんだろう?
-これをラップした raques.gem みたいなのは作っちゃダメなのかな?
-.soと.hは自分で用意してねっていう形でならok?
-といっても今コンパイル済みバイナリを ./bin/yukkuri に置いてるけど、これも.so無いと動かないよね?
-かといって.so同梱できるようなライセンスじゃないよね? そんなんしたら商売上がったりだよね?
-あんまC方面わからんからこのライセンスが一体何をしてよくて何をしていけないのかわからない。</p>
 ]]></content>
   </entry>
   
