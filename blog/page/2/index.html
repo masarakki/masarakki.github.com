@@ -9,9 +9,7 @@
   <meta name="author" content="masarakki">
 
   
-  <meta name="description" content="EroGetter対応サイトを増やす サイト定義を書くことで対応サイトを増やすことができます。 準備するもの まともな(ry
-対象サイト 記事urlの正規表現
-サイト名 エロにかける情熱 今回追加するサイトは http://example.com/archives/\d.html &hellip;">
+  <meta name="description" content="Rails のログ出力には filter_parameters という一部のパラメータを隠す便利な機能があります。 デフォルトでは config/application.rb に 1 config.filter_parameters += [:password] と書かれています。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -71,6 +69,193 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/09/20/how-to-hide-json-values-in-loggin/">RailsログでJSONの一部を隠す方法</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-20T05:10:00+09:00" pubdate data-updated="true">Sep 20<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Rails のログ出力には filter_parameters という一部のパラメータを隠す便利な機能があります。</p>
+
+<p>デフォルトでは config/application.rb に</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">filter_parameters</span> <span class="o">+=</span> <span class="o">[</span><span class="ss">:password</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>と書かれています。</p>
+
+<p>ここにフィルタしたいパラメータを追加すれば [FILTERED] という文字列に置き換えられます</p>
+
+<p>例えば開発者が user_id を見てはいけない社内ルールがある場合</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">filter_parameters</span> <span class="o">+=</span> <span class="o">[</span><span class="ss">:password</span><span class="p">,</span> <span class="ss">:user_id</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>とすればいいわけです。</p>
+
+<h2>ためしてみる</h2>
+
+<h3>GETの場合</h3>
+
+<pre><code>GET /posts?password=abc123
+</code></pre>
+
+<p>を叩いた場合ログに</p>
+
+<pre><code>Started GET "/posts?password=[FILTERED]" for 127.0.0.1 at 2012-09-20 05:16:44 +0900
+Processing by PostsController#index as HTML
+  Parameters: {"password"=&gt;"[FILTERED]"}
+</code></pre>
+
+<p>とURLもパラメータも [FILTERED] に変えられて出力されます。</p>
+
+<h3>POSTの場合</h3>
+
+<pre><code>POST /posts
+data: password=abc123
+</code></pre>
+
+<p>を叩いた場合ログは</p>
+
+<pre><code>Started POST "/posts" for 127.0.0.1 at 2012-09-20 05:18:12 +0900
+Processing by PostsController#create as */*
+  Parameters: {"password"=&gt;"[FILTERED]"}
+</code></pre>
+
+<p>上手いことフィルタされますね。</p>
+
+<p>Rails の標準的なPOSTパラメータ形式の :post => {:password => &ldquo;abc123&rdquo;} はどうでしょうか</p>
+
+<pre><code>Started POST "/posts" for 127.0.0.1 at 2012-09-20 05:22:33 +0900
+Processing by PostsController#create as */*
+  Parameters: {"post"=&gt;{"password"=&gt;"[FILTERED]", "title"=&gt;"unko"}}
+</code></pre>
+
+<p>これもきちんとフィルタできてます。</p>
+
+<h2>特殊な事情</h2>
+
+<p>ある特殊な事情から「パラメータは json というキーに json 文字列で入ってくる」というプロジェクトがある場合どうなるでしょうか?
+ほんとにそんなプロジェクトがあるんでしょうか? ファックですね。
+どうせ原因はこのAPIを叩いてくるphpが低脳だからに違いありません。</p>
+
+<pre><code>POST "/post"
+data: json={\"password\":\"abc123\"}
+</code></pre>
+
+<p>という状況です。 ためしてみましょう。</p>
+
+<pre><code>Started POST "/posts" for 127.0.0.1 at 2012-09-20 05:30:56 +0900
+Processing by PostsController#create as */*
+  Parameters: {"json"=&gt;"{\"password\":\"abc123\"}"}
+</code></pre>
+
+<p>残念、丸見えです! かと言って :json を全部フィルタするのは開発の妨げになってしまいます。</p>
+
+<h3>一番かっこ悪い解決方法</h3>
+
+<p>filter_parameters には、|key, value| を引数に取る lambda を指定することもできるようです。
+サンプルでは</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">lambda</span> <span class="k">do</span> <span class="o">|</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">v</span><span class="o">.</span><span class="n">reverse!</span> <span class="k">if</span> <span class="n">k</span> <span class="o">=~</span> <span class="o">%</span><span class="n">rsecret</span><span class="o">/</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>と書かれていますが、reverse! と破壊的メソッドを使っているのがすごく嫌な予感がします。
+どうやら value のオブジェクトを破壊的に変更しないといけないようです。</p>
+
+<p>こんな感じで書いてみました。</p>
+
+<div><script src='https://gist.github.com/3752166.js'></script>
+<noscript><pre><code>config.filter_parameters += [:password, lambda {|k, v|
+   if k.to_sym == :json
+     json = JSON.parse(v).symbolize_keys
+     json[:password] = &quot;[FILTERED]&quot; if json.has_key?(:password)
+     v.replace json.to_s
+   end
+}]</code></pre></noscript></div>
+
+
+<p>ログの出力結果は</p>
+
+<pre><code>Started POST "/posts" for 127.0.0.1 at 2012-09-20 05:49:22 +0900
+Processing by PostsController#create as */*
+  Parameters: {"json"=&gt;"{:password=&gt;\"[FILTERED]\"}"}
+</code></pre>
+
+<p>上手くいってます!!</p>
+
+<p>ポイントは v.replace でオブジェクト自体は変えずに文字列を変更してる点です。
+これを</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">v</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">to_s</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>とやってしまうと上手く動きません。</p>
+
+<p>とりあえずこれで泣く泣く json の入力すべてを捨てる必要はなくなりました。 やった!!</p>
+
+<h3>問題点</h3>
+
+<ul>
+<li>[FILTERED] が定義されているクラスのファイルを require してもクラスが存在しないと言われる? ロード順の問題?</li>
+<li>普通に指定されたフィルタしたいパラメータを lambda 内で再利用できない
+
+<ul>
+<li>lambda での指定は最後に評価されるので</li>
+<li>before_filter (<strong>まさに!</strong>) があれば解決?</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>ほんとにやりたい一番かっこいい解決方法</h2>
+
+<p>:json が渡ってきた場合は filter とかする前に JSON.parse してハッシュにしたい。
+そうすれば普通に filter_parameters += [:password, :user_id] を指定するだけで、
+:post => {:password => &ldquo;abc123&rdquo;} がフィルタできたのと同様にフィルタできるはず。</p>
+
+<p>次はこれを調べる。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -628,6 +813,10 @@ UploadedFileクラスの中身はTempfileなので</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/02/15/how-to-create-gem/">Gemの作り方まとめ 普通のgem編</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/12/25/capistrano-env/">不自由なデプロイを強いられてる人のための Capistrano-env ってgemを作った</a>
       </li>
     
@@ -641,10 +830,6 @@ UploadedFileクラスの中身はTempfileなので</p>
     
       <li class="post">
         <a href="/blog/2013/02/14/supervisor-with-rvm/">Run Ruby on Supervisor With RVM</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/11/04/how-to-travis-a-gem-with-c-extension/">Travis CIでrubyのC拡張が入ったgemのテストをする方法</a>
       </li>
     
   </ul>
@@ -699,7 +884,7 @@ UploadedFileクラスの中身はTempfileなので</p>
   </div>
   <footer role="contentinfo"><hr>
 <p>
-  Copyright &copy; 2013 - masarakki -
+  Copyright &copy; 2014 - masarakki -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

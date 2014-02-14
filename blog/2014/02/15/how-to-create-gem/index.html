@@ -1,0 +1,567 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Gemの作り方まとめ 普通のgem編 - masarakki's blog</title>
+  <meta name="author" content="masarakki">
+
+  
+  <meta name="description" content="会社の人にgemの作り方まとめてくれって言われたので標準的なgemの作り方をまとめます。
+標準的な作り方なので他の人が作ったgemを読み解くヒントにもなります。 とはいえ有名なgemは(有名なgemに限って)メッチャクチャだったりするので読みづらかったりします。
+歴史が古かったりすると特にね。 &hellip;">
+  <meta name="keywords" content="ruby,gem">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://masarakki.github.com/blog/2014/02/15/how-to-create-gem">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="masarakki's blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-20908831-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner">
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:masarakki.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="nav">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/resume">Resume</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Gemの作り方まとめ 普通のgem編</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-15T06:39:24+09:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>会社の人にgemの作り方まとめてくれって言われたので標準的なgemの作り方をまとめます。
+標準的な作り方なので他の人が作ったgemを読み解くヒントにもなります。</p>
+
+<p>とはいえ有名なgemは(有名なgemに限って)メッチャクチャだったりするので読みづらかったりします。
+歴史が古かったりすると特にね。</p>
+
+<h2>ジェネレータ</h2>
+
+<p>まずはジェネレータを使ってプロジェクトを作りましょう。
+昔はいろいろあったけど最近は <code>bundle</code> コマンドで大勢が決定してる感じです。</p>
+
+<pre><code>bundle gem test_gem -t
+</code></pre>
+
+<p><code>-t</code> はテストも作成するオプションです。デフォルトでrspecを使うようになってます。
+その他のオプションは</p>
+
+<pre><code>bundle help gem
+</code></pre>
+
+<p>で確認できます。</p>
+
+<p>Railsプラグインのgemを作る場合は</p>
+
+<pre><code>rails plugin new test_gem
+</code></pre>
+
+<p>を使う方法もあります。
+別記事で詳しく書く予定です。</p>
+
+<h3>作成されるファイル</h3>
+
+<p>作られるファイルの一覧はこんなかんじです</p>
+
+<pre><code> create  test_gem/Gemfile
+ create  test_gem/Rakefile
+ create  test_gem/LICENSE.txt
+ create  test_gem/README.md
+ create  test_gem/.gitignore
+ create  test_gem/test_gem.gemspec
+ create  test_gem/lib/test_gem.rb
+ create  test_gem/lib/test_gem/version.rb
+ create  test_gem/.rspec
+ create  test_gem/spec/spec_helper.rb
+ create  test_gem/spec/test_gem_spec.rb
+ create  test_gem/.travis.yml
+</code></pre>
+
+<h3>gem名について</h3>
+
+<p>gem名の <code>-</code> はディレクトリ構造に変換されます。
+例えば <code>test-gem</code> という名前で作ると <code>lib/test_gem.rb</code> だったところが <code>lib/test/gem.rb</code> のような構造になります。</p>
+
+<p><code>Gemfile</code> 内で</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">gem</span> <span class="s1">&#39;test-gem&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>が正しくロードできるように
+<code>lib/test-gem.rb</code> を作ってその中で</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;test/gem&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>するといいでしょう。</p>
+
+<h2>gemspec</h2>
+
+<p>gemの中を見たことがなければgemspecというファイルは初見でしょう。
+gemspecファイルはgemのメタデータが書かれています。</p>
+
+<p>生成された直後はこんな内容になっています。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># coding: utf-8</span>
+</span><span class='line'><span class="n">lib</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="s1">&#39;../lib&#39;</span><span class="p">,</span> <span class="bp">__FILE__</span><span class="p">)</span>
+</span><span class='line'><span class="vg">$LOAD_PATH</span><span class="o">.</span><span class="n">unshift</span><span class="p">(</span><span class="n">lib</span><span class="p">)</span> <span class="k">unless</span> <span class="vg">$LOAD_PATH</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">lib</span><span class="p">)</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;test_gem/version&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="ss">Gem</span><span class="p">:</span><span class="ss">:Specification</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span> <span class="o">|</span><span class="n">spec</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">name</span>          <span class="o">=</span> <span class="s2">&quot;test_gem&quot;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">version</span>       <span class="o">=</span> <span class="ss">TestGem</span><span class="p">:</span><span class="ss">:VERSION</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">authors</span>       <span class="o">=</span> <span class="o">[</span><span class="s2">&quot;HOGE&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">email</span>         <span class="o">=</span> <span class="o">[</span><span class="s2">&quot;hoge@example.com&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">description</span>   <span class="o">=</span> <span class="sx">%q{TODO: Write a gem description}</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">summary</span>       <span class="o">=</span> <span class="sx">%q{TODO: Write a gem summary}</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">homepage</span>      <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">license</span>       <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">files</span>         <span class="o">=</span> <span class="sb">`git ls-files`</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="vg">$/</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">executables</span>   <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span><span class="sr">%r{^bin/}</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="no">File</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">test_files</span>    <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span><span class="sr">%r{^(test|spec|features)/}</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">require_paths</span> <span class="o">=</span> <span class="o">[</span><span class="s2">&quot;lib&quot;</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">add_development_dependency</span> <span class="s2">&quot;bundler&quot;</span><span class="p">,</span> <span class="s2">&quot;~&gt; 1.3&quot;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">add_development_dependency</span> <span class="s2">&quot;rake&quot;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">add_development_dependency</span> <span class="s2">&quot;rspec&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>まずTODOのところを埋めましょう。
+spec.homepage にはgithubのurlを入れましょう。</p>
+
+<p>このファイルで重要なのは依存するgemの設定です。
+<code>add_dependency</code> と <code>add_development_dependency</code> を使って必要なgemを追加しましょう。
+Gemfileはこの中身を参照しているので変更する必要はありません。</p>
+
+<p>それ以外の設定はなるべくいじらないほうがいいです。</p>
+
+<h2>中身の作成</h2>
+
+<p>まず <code>lib/test_gem.rb</code> を見てみましょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s2">&quot;test_gem/version&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">module</span> <span class="nn">TestGem</span>
+</span><span class='line'>  <span class="c1"># Your code goes here...</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注目するのは TestGem が module だということです。
+ここはなるべく module のままで、実際に色々やるのは下の class に任せましょう。</p>
+
+<p>例えば Client という class を作るなら、 <code>lib/test_gem/client.rb</code> を作って</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">TestGem</span>
+</span><span class='line'>  <span class="k">class</span> <span class="nc">Client</span>
+</span><span class='line'>    <span class="c1"># codes</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>な感じに書きます。
+クラス構造とディレクトリ構造を一致させましょう。</p>
+
+<p>それを <code>lib/test_gem.rb</code> でロードします。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;test_gem/version&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;test_gem/client&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">module</span> <span class="nn">TestGem</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ActiveSupportのautoloadを使う場合は、</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;active_support/dependencies&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">module</span> <span class="nn">TestGem</span>
+</span><span class='line'>  <span class="nb">autoload</span> <span class="ss">:Client</span><span class="p">,</span> <span class="s1">&#39;test_gem/client&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>という感じになります。
+Railsだと <code>Gemfile</code> に書いたgemを自動でrequireしてくれますが、ここではしてくれないので手動でrequireしなければいけません。</p>
+
+<p>テストもディレクトリ構造を一致させましょう。
+最初は <code>spec/test_gem_spec.rb</code> しかありません。
+<code>spec/test_gem</code> ディレクトリを作り、 その中に <code>spec/test_gem/client_spec.rb</code> を作るという感じです。</p>
+
+<p><code>guard</code> を使う場合は、</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">guard</span> <span class="ss">:rspec</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^lib/(.+)\.rb$}</span><span class="p">)</span>     <span class="p">{</span> <span class="o">|</span><span class="n">m</span><span class="o">|</span> <span class="s2">&quot;spec/</span><span class="si">#{</span><span class="n">m</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="si">}</span><span class="s2">_spec.rb&quot;</span> <span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>と定義すればちょうどディレクトリ構造がぴったり合います。</p>
+
+<h2>実行可能なコマンドを含める</h2>
+
+<p>例えば <code>rspec</code> のような実行可能なコマンドも簡単に含めることができます。
+<code>bin</code> ディレクトリを作り、その中に実行ファイルを入れるだけです。</p>
+
+<p>コマンドなのでファイル名に <code>.rb</code> を付けないほうが見栄えがいいです。
+例えば <code>bin/run_test_gem</code> というファイル名で</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#!/usr/bin/env ruby</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;test_gem&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">p</span> <span class="ss">TestGem</span><span class="p">:</span><span class="ss">:Client</span><span class="o">.</span><span class="n">new</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>のような内容にすると、 <code>run_test_gem</code> というコマンドが使えるようになります。</p>
+
+<p>ただし普段rvmを使っているので、これに関してだけは他のシステムだとどうなるかちょっと分からないです。
+rvmの場合、直接コマンドを実行せずにラッパースクリプト経由になるので</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">TestGem</span><span class="p">:</span><span class="ss">:Client</span><span class="o">.</span><span class="n">new</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>だけで動いてしまいます。</p>
+
+<h2>ビルドとかリリースとか</h2>
+
+<p>ビルドやリリースはすべてrakeタスクが用意されています</p>
+
+<pre><code>rake -T
+</code></pre>
+
+<p>で確認しましょう。</p>
+
+<p>リリースの前は <code>lib/test_gem/version.rb</code> を手で編集してバージョン番号を上げないといけません。
+(これのせいでjewelerが好きだった)</p>
+
+<p>上記の実行可能コマンドを実際に試してみたいときは、<strong>対象ファイルをコミットして</strong></p>
+
+<pre><code>rake install
+</code></pre>
+
+<p>でインストールしないと実行できないというよくハマりがちな罠があります。</p>
+
+<h2>実際にどんなふうにクラス書いていけばいいの?</h2>
+
+<p>他のgemをたくさん読みましょう。</p>
+
+<p>よく知られているgemの多くはとにかく<strong>デカイ</strong>です。
+構造を把握するだけでもかなり大変です。
+小奇麗にまとまったgemを探して読んでみましょう。</p>
+
+<h2>一番大事なこと</h2>
+
+<p>コードにもコミットメッセージにも <strong>日本語を含めるべきではない</strong> 。</p>
+
+<h2>もうちっとだけ続くんじゃ</h2>
+
+<ul>
+<li>Railsプラグインの作り方</li>
+<li>C拡張を含むgemの作り方</li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">masarakki</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-15T06:39:24+09:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ruby/'>ruby</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://masarakki.github.com/blog/2014/02/15/how-to-create-gem/" data-via="masarakki" data-counturl="http://masarakki.github.com/blog/2014/02/15/how-to-create-gem/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/12/25/capistrano-env/" title="Previous Post: 不自由なデプロイを強いられてる人のための capistrano-env ってgemを作った">&laquo; 不自由なデプロイを強いられてる人のための capistrano-env ってgemを作った</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/02/15/how-to-create-gem/">Gemの作り方まとめ 普通のgem編</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/25/capistrano-env/">不自由なデプロイを強いられてる人のための Capistrano-env ってgemを作った</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/22/java-ja-kowai/">Java-ja Kowai</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/16/make-url-cool/">Make Url Cool</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/14/supervisor-with-rvm/">Run Ruby on Supervisor With RVM</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/masarakki">@masarakki</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'masarakki',
+            count: 6,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/107002572043873162468?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><hr>
+<p>
+  Copyright &copy; 2014 - masarakki -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

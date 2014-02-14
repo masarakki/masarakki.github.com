@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ruby | masarakki's blog]]></title>
   <link href="http://masarakki.github.com/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://masarakki.github.com/"/>
-  <updated>2013-12-25T21:19:35+09:00</updated>
+  <updated>2014-02-15T08:48:27+09:00</updated>
   <id>http://masarakki.github.com/</id>
   <author>
     <name><![CDATA[masarakki]]></name>
@@ -12,6 +12,261 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[gemの作り方まとめ 普通のgem編]]></title>
+    <link href="http://masarakki.github.com/blog/2014/02/15/how-to-create-gem/"/>
+    <updated>2014-02-15T06:39:24+09:00</updated>
+    <id>http://masarakki.github.com/blog/2014/02/15/how-to-create-gem</id>
+    <content type="html"><![CDATA[<p>会社の人にgemの作り方まとめてくれって言われたので標準的なgemの作り方をまとめます。
+標準的な作り方なので他の人が作ったgemを読み解くヒントにもなります。</p>
+
+<p>とはいえ有名なgemは(有名なgemに限って)メッチャクチャだったりするので読みづらかったりします。
+歴史が古かったりすると特にね。</p>
+
+<h2>ジェネレータ</h2>
+
+<p>まずはジェネレータを使ってプロジェクトを作りましょう。
+昔はいろいろあったけど最近は <code>bundle</code> コマンドで大勢が決定してる感じです。</p>
+
+<pre><code>bundle gem test_gem -t
+</code></pre>
+
+<p><code>-t</code> はテストも作成するオプションです。デフォルトでrspecを使うようになってます。
+その他のオプションは</p>
+
+<pre><code>bundle help gem
+</code></pre>
+
+<p>で確認できます。</p>
+
+<p>Railsプラグインのgemを作る場合は</p>
+
+<pre><code>rails plugin new test_gem
+</code></pre>
+
+<p>を使う方法もあります。
+別記事で詳しく書く予定です。</p>
+
+<h3>作成されるファイル</h3>
+
+<p>作られるファイルの一覧はこんなかんじです</p>
+
+<pre><code> create  test_gem/Gemfile
+ create  test_gem/Rakefile
+ create  test_gem/LICENSE.txt
+ create  test_gem/README.md
+ create  test_gem/.gitignore
+ create  test_gem/test_gem.gemspec
+ create  test_gem/lib/test_gem.rb
+ create  test_gem/lib/test_gem/version.rb
+ create  test_gem/.rspec
+ create  test_gem/spec/spec_helper.rb
+ create  test_gem/spec/test_gem_spec.rb
+ create  test_gem/.travis.yml
+</code></pre>
+
+<h3>gem名について</h3>
+
+<p>gem名の <code>-</code> はディレクトリ構造に変換されます。
+例えば <code>test-gem</code> という名前で作ると <code>lib/test_gem.rb</code> だったところが <code>lib/test/gem.rb</code> のような構造になります。</p>
+
+<p><code>Gemfile</code> 内で</p>
+
+<p><code>ruby
+gem 'test-gem'
+</code></p>
+
+<p>が正しくロードできるように
+<code>lib/test-gem.rb</code> を作ってその中で</p>
+
+<p><code>ruby
+require 'test/gem'
+</code></p>
+
+<p>するといいでしょう。</p>
+
+<h2>gemspec</h2>
+
+<p>gemの中を見たことがなければgemspecというファイルは初見でしょう。
+gemspecファイルはgemのメタデータが書かれています。</p>
+
+<p>生成された直後はこんな内容になっています。</p>
+
+<p>```ruby</p>
+
+<h1>coding: utf-8</h1>
+
+<p>lib = File.expand_path(&lsquo;../lib&rsquo;, <strong>FILE</strong>)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require &lsquo;test_gem/version&rsquo;</p>
+
+<p>Gem::Specification.new do |spec|
+  spec.name          = &ldquo;test_gem&rdquo;
+  spec.version       = TestGem::VERSION
+  spec.authors       = [&ldquo;HOGE&rdquo;]
+  spec.email         = [&ldquo;<a href="&#109;&#97;&#x69;&#x6c;&#116;&#x6f;&#58;&#104;&#x6f;&#103;&#x65;&#64;&#x65;&#x78;&#x61;&#x6d;&#112;&#108;&#x65;&#x2e;&#x63;&#x6f;&#x6d;">&#x68;&#x6f;&#x67;&#x65;&#64;&#x65;&#x78;&#x61;&#x6d;&#x70;&#108;&#101;&#x2e;&#x63;&#111;&#109;</a>&rdquo;]
+  spec.description   = %q{TODO: Write a gem description}
+  spec.summary       = %q{TODO: Write a gem summary}
+  spec.homepage      = &ldquo;&rdquo;
+  spec.license       = &ldquo;MIT&rdquo;</p>
+
+<p>  spec.files         = <code>git ls-files</code>.split($/)
+  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
+  spec.require_paths = [&ldquo;lib&rdquo;]</p>
+
+<p>  spec.add_development_dependency &ldquo;bundler&rdquo;, &ldquo;~> 1.3&rdquo;
+  spec.add_development_dependency &ldquo;rake&rdquo;
+  spec.add_development_dependency &ldquo;rspec&rdquo;
+end
+```</p>
+
+<p>まずTODOのところを埋めましょう。
+spec.homepage にはgithubのurlを入れましょう。</p>
+
+<p>このファイルで重要なのは依存するgemの設定です。
+<code>add_dependency</code> と <code>add_development_dependency</code> を使って必要なgemを追加しましょう。
+Gemfileはこの中身を参照しているので変更する必要はありません。</p>
+
+<p>それ以外の設定はなるべくいじらないほうがいいです。</p>
+
+<h2>中身の作成</h2>
+
+<p>まず <code>lib/test_gem.rb</code> を見てみましょう。</p>
+
+<p>```ruby
+require &ldquo;test_gem/version&rdquo;</p>
+
+<p>module TestGem
+  # Your code goes here&hellip;
+end
+```</p>
+
+<p>注目するのは TestGem が module だということです。
+ここはなるべく module のままで、実際に色々やるのは下の class に任せましょう。</p>
+
+<p>例えば Client という class を作るなら、 <code>lib/test_gem/client.rb</code> を作って</p>
+
+<p>```ruby
+module TestGem
+  class Client</p>
+
+<pre><code># codes
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>な感じに書きます。
+クラス構造とディレクトリ構造を一致させましょう。</p>
+
+<p>それを <code>lib/test_gem.rb</code> でロードします。</p>
+
+<p>```ruby
+require &lsquo;test_gem/version&rsquo;
+require &lsquo;test_gem/client&rsquo;</p>
+
+<p>module TestGem
+end
+```</p>
+
+<p>ActiveSupportのautoloadを使う場合は、</p>
+
+<p>```ruby
+require &lsquo;active_support/dependencies&rsquo;</p>
+
+<p>module TestGem
+  autoload :Client, &lsquo;test_gem/client&rsquo;
+end
+```</p>
+
+<p>という感じになります。
+Railsだと <code>Gemfile</code> に書いたgemを自動でrequireしてくれますが、ここではしてくれないので手動でrequireしなければいけません。</p>
+
+<p>テストもディレクトリ構造を一致させましょう。
+最初は <code>spec/test_gem_spec.rb</code> しかありません。
+<code>spec/test_gem</code> ディレクトリを作り、 その中に <code>spec/test_gem/client_spec.rb</code> を作るという感じです。</p>
+
+<p><code>guard</code> を使う場合は、</p>
+
+<p><code>ruby
+guard :rspec do
+  watch(%r{^lib/(.+)\.rb$})     { |m| "spec/#{m[1]}_spec.rb" }
+end
+</code></p>
+
+<p>と定義すればちょうどディレクトリ構造がぴったり合います。</p>
+
+<h2>実行可能なコマンドを含める</h2>
+
+<p>例えば <code>rspec</code> のような実行可能なコマンドも簡単に含めることができます。
+<code>bin</code> ディレクトリを作り、その中に実行ファイルを入れるだけです。</p>
+
+<p>コマンドなのでファイル名に <code>.rb</code> を付けないほうが見栄えがいいです。
+例えば <code>bin/run_test_gem</code> というファイル名で</p>
+
+<p>```ruby</p>
+
+<h1>!/usr/bin/env ruby</h1>
+
+<p>require &lsquo;test_gem&rsquo;</p>
+
+<p>p TestGem::Client.new
+```</p>
+
+<p>のような内容にすると、 <code>run_test_gem</code> というコマンドが使えるようになります。</p>
+
+<p>ただし普段rvmを使っているので、これに関してだけは他のシステムだとどうなるかちょっと分からないです。
+rvmの場合、直接コマンドを実行せずにラッパースクリプト経由になるので</p>
+
+<p><code>ruby
+TestGem::Client.new
+</code></p>
+
+<p>だけで動いてしまいます。</p>
+
+<h2>ビルドとかリリースとか</h2>
+
+<p>ビルドやリリースはすべてrakeタスクが用意されています</p>
+
+<pre><code>rake -T
+</code></pre>
+
+<p>で確認しましょう。</p>
+
+<p>リリースの前は <code>lib/test_gem/version.rb</code> を手で編集してバージョン番号を上げないといけません。
+(これのせいでjewelerが好きだった)</p>
+
+<p>上記の実行可能コマンドを実際に試してみたいときは、<strong>対象ファイルをコミットして</strong></p>
+
+<pre><code>rake install
+</code></pre>
+
+<p>でインストールしないと実行できないというよくハマりがちな罠があります。</p>
+
+<h2>実際にどんなふうにクラス書いていけばいいの?</h2>
+
+<p>他のgemをたくさん読みましょう。</p>
+
+<p>よく知られているgemの多くはとにかく<strong>デカイ</strong>です。
+構造を把握するだけでもかなり大変です。
+小奇麗にまとまったgemを探して読んでみましょう。</p>
+
+<h2>一番大事なこと</h2>
+
+<p>コードにもコミットメッセージにも <strong>日本語を含めるべきではない</strong> 。</p>
+
+<h2>もうちっとだけ続くんじゃ</h2>
+
+<ul>
+<li>Railsプラグインの作り方</li>
+<li>C拡張を含むgemの作り方</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[不自由なデプロイを強いられてる人のための capistrano-env ってgemを作った]]></title>
@@ -482,68 +737,6 @@ $ hub pull-request
 
 <p>gemのメタデータにあるhomepageの項目がgithubっぽかったらcloneするらしいです。
 なのでみんなhomepageはgithubのurlにしましょう。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ゆっくりにアクセントをつけてみた]]></title>
-    <link href="http://masarakki.github.com/blog/2012/10/07/make-yukkuri-to-use-accent/"/>
-    <updated>2012-10-07T03:21:00+09:00</updated>
-    <id>http://masarakki.github.com/blog/2012/10/07/make-yukkuri-to-use-accent</id>
-    <content type="html"><![CDATA[<h2>あらすじ</h2>
-
-<p><em><a href="http://masarakki.github.com/blog/2012/09/22/yukkurid/">前回</a>、
-棒読みちゃんと同じAquesTalkという音声合成エンジンを使い、
-Linuxでも棒読みができるアプリケーションyukkuriを作った俺。</em></p>
-
-<p><em>ところがこのyukkuriには致命的な欠陥があったのだ!!</em></p>
-
-<h2>実際に喋らせてみた</h2>
-
-<p>棒読みちゃん以上に棒読みだった。
-完全に真っ平ら。ぺったんこ。
-<strong>実は棒読みちゃんは棒読みじゃなかった</strong></p>
-
-<p>どうやらAquesTalkは自分でアクセント記号を付けないといけないようです。
-棒読みちゃんにもアクセント付きに変換された文字列が表示されます。</p>
-
-<h2>アクセントの付け方</h2>
-
-<p>やはりこのままmecabを使いたいので 「mecab アクセント」 でぐぐってみたところ、
-<a href="http://www.tokuteicorpus.jp/dist/">Unidic</a>というmecab用アクセント辞書があるようです。
-これを組み込めばアクセントがうまく処理できそうです。</p>
-
-<p>アクセントの仕様はかなり複雑なので一部から実装していきます。
-実際にニコ生で使って気になるアクセントがあったらテストを書いて修正していくという方法を取ります。</p>
-
-<h2>アクセントのテストデータ</h2>
-
-<p>アクセントの処理を実装するにあたって、もちろんテストデータが必要になります。</p>
-
-<h4>方法1. 棒読みちゃんに喋らせてみてアクセント付き文字列を使う</h4>
-
-<p>残念ながらLinuxではWineを使っても棒読みちゃんが動かなかったので断念。</p>
-
-<h4>方法2. TASETのデモページを使う</h4>
-
-<p><a href="https://sites.google.com/site/suzukimasayuki/accent">CRFを用いたアクセント結合推定</a>
-というなんか難しいサイトの <a href="http://www.gavo.t.u-tokyo.ac.jp/~suzuki/taset_demo/">デモページ</a>
-で文章にアクセントをつけることができます。
-ただし変換にかなり時間がかかり、実際に喋らせてみるとなんかちょっと変です。</p>
-
-<h4>方法3. 聞く</h4>
-
-<p>2で作ったアクセントを実際に喋らせてみて、
-自然に聞こえるように微調整するのが一番良さそうです。</p>
-
-<p>ただし、細かい部分では<strong>正しい</strong>日本語の発音なんてのは知らないので、
-こんなもんなのかで済ませます。</p>
-
-<h2>結果</h2>
-
-<p>たぶん棒読みちゃんより正確なアクセントが付けれるようになった。
-確認は<a href="https://github.com/masarakki/yukkurid">コード</a>を実行してみるか、
-<a href="http://com.nicovideo.jp/community/co600306">ニコ生の放送</a>を見てくださいな。</p>
 ]]></content>
   </entry>
   

@@ -9,7 +9,9 @@
   <meta name="author" content="masarakki">
 
   
-  <meta name="description" content="capistrano-env ってgemを作った 不自由なデプロイを強いられているんだッ すべての人間は大きく2種類に分割でき、それは自由なデプロイを許された人間と、不自由なデプロイを強いられた人間です。 不自由なデプロイを強いられる環境とは次のような環境のことをいいます。 &hellip;">
+  <meta name="description" content="会社の人にgemの作り方まとめてくれって言われたので標準的なgemの作り方をまとめます。
+標準的な作り方なので他の人が作ったgemを読み解くヒントにもなります。 とはいえ有名なgemは(有名なgemに限って)メッチャクチャだったりするので読みづらかったりします。
+歴史が古かったりすると特にね。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -69,6 +71,337 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/15/how-to-create-gem/">Gemの作り方まとめ 普通のgem編</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-15T06:39:24+09:00" pubdate data-updated="true">Feb 15<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>会社の人にgemの作り方まとめてくれって言われたので標準的なgemの作り方をまとめます。
+標準的な作り方なので他の人が作ったgemを読み解くヒントにもなります。</p>
+
+<p>とはいえ有名なgemは(有名なgemに限って)メッチャクチャだったりするので読みづらかったりします。
+歴史が古かったりすると特にね。</p>
+
+<h2>ジェネレータ</h2>
+
+<p>まずはジェネレータを使ってプロジェクトを作りましょう。
+昔はいろいろあったけど最近は <code>bundle</code> コマンドで大勢が決定してる感じです。</p>
+
+<pre><code>bundle gem test_gem -t
+</code></pre>
+
+<p><code>-t</code> はテストも作成するオプションです。デフォルトでrspecを使うようになってます。
+その他のオプションは</p>
+
+<pre><code>bundle help gem
+</code></pre>
+
+<p>で確認できます。</p>
+
+<p>Railsプラグインのgemを作る場合は</p>
+
+<pre><code>rails plugin new test_gem
+</code></pre>
+
+<p>を使う方法もあります。
+別記事で詳しく書く予定です。</p>
+
+<h3>作成されるファイル</h3>
+
+<p>作られるファイルの一覧はこんなかんじです</p>
+
+<pre><code> create  test_gem/Gemfile
+ create  test_gem/Rakefile
+ create  test_gem/LICENSE.txt
+ create  test_gem/README.md
+ create  test_gem/.gitignore
+ create  test_gem/test_gem.gemspec
+ create  test_gem/lib/test_gem.rb
+ create  test_gem/lib/test_gem/version.rb
+ create  test_gem/.rspec
+ create  test_gem/spec/spec_helper.rb
+ create  test_gem/spec/test_gem_spec.rb
+ create  test_gem/.travis.yml
+</code></pre>
+
+<h3>gem名について</h3>
+
+<p>gem名の <code>-</code> はディレクトリ構造に変換されます。
+例えば <code>test-gem</code> という名前で作ると <code>lib/test_gem.rb</code> だったところが <code>lib/test/gem.rb</code> のような構造になります。</p>
+
+<p><code>Gemfile</code> 内で</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">gem</span> <span class="s1">&#39;test-gem&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>が正しくロードできるように
+<code>lib/test-gem.rb</code> を作ってその中で</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;test/gem&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>するといいでしょう。</p>
+
+<h2>gemspec</h2>
+
+<p>gemの中を見たことがなければgemspecというファイルは初見でしょう。
+gemspecファイルはgemのメタデータが書かれています。</p>
+
+<p>生成された直後はこんな内容になっています。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># coding: utf-8</span>
+</span><span class='line'><span class="n">lib</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="s1">&#39;../lib&#39;</span><span class="p">,</span> <span class="bp">__FILE__</span><span class="p">)</span>
+</span><span class='line'><span class="vg">$LOAD_PATH</span><span class="o">.</span><span class="n">unshift</span><span class="p">(</span><span class="n">lib</span><span class="p">)</span> <span class="k">unless</span> <span class="vg">$LOAD_PATH</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">lib</span><span class="p">)</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;test_gem/version&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="ss">Gem</span><span class="p">:</span><span class="ss">:Specification</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span> <span class="o">|</span><span class="n">spec</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">name</span>          <span class="o">=</span> <span class="s2">&quot;test_gem&quot;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">version</span>       <span class="o">=</span> <span class="ss">TestGem</span><span class="p">:</span><span class="ss">:VERSION</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">authors</span>       <span class="o">=</span> <span class="o">[</span><span class="s2">&quot;HOGE&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">email</span>         <span class="o">=</span> <span class="o">[</span><span class="s2">&quot;hoge@example.com&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">description</span>   <span class="o">=</span> <span class="sx">%q{TODO: Write a gem description}</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">summary</span>       <span class="o">=</span> <span class="sx">%q{TODO: Write a gem summary}</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">homepage</span>      <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">license</span>       <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">files</span>         <span class="o">=</span> <span class="sb">`git ls-files`</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="vg">$/</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">executables</span>   <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span><span class="sr">%r{^bin/}</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="no">File</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">test_files</span>    <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span><span class="sr">%r{^(test|spec|features)/}</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">require_paths</span> <span class="o">=</span> <span class="o">[</span><span class="s2">&quot;lib&quot;</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">add_development_dependency</span> <span class="s2">&quot;bundler&quot;</span><span class="p">,</span> <span class="s2">&quot;~&gt; 1.3&quot;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">add_development_dependency</span> <span class="s2">&quot;rake&quot;</span>
+</span><span class='line'>  <span class="n">spec</span><span class="o">.</span><span class="n">add_development_dependency</span> <span class="s2">&quot;rspec&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>まずTODOのところを埋めましょう。
+spec.homepage にはgithubのurlを入れましょう。</p>
+
+<p>このファイルで重要なのは依存するgemの設定です。
+<code>add_dependency</code> と <code>add_development_dependency</code> を使って必要なgemを追加しましょう。
+Gemfileはこの中身を参照しているので変更する必要はありません。</p>
+
+<p>それ以外の設定はなるべくいじらないほうがいいです。</p>
+
+<h2>中身の作成</h2>
+
+<p>まず <code>lib/test_gem.rb</code> を見てみましょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s2">&quot;test_gem/version&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">module</span> <span class="nn">TestGem</span>
+</span><span class='line'>  <span class="c1"># Your code goes here...</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注目するのは TestGem が module だということです。
+ここはなるべく module のままで、実際に色々やるのは下の class に任せましょう。</p>
+
+<p>例えば Client という class を作るなら、 <code>lib/test_gem/client.rb</code> を作って</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">TestGem</span>
+</span><span class='line'>  <span class="k">class</span> <span class="nc">Client</span>
+</span><span class='line'>    <span class="c1"># codes</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>な感じに書きます。
+クラス構造とディレクトリ構造を一致させましょう。</p>
+
+<p>それを <code>lib/test_gem.rb</code> でロードします。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;test_gem/version&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;test_gem/client&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">module</span> <span class="nn">TestGem</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ActiveSupportのautoloadを使う場合は、</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;active_support/dependencies&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">module</span> <span class="nn">TestGem</span>
+</span><span class='line'>  <span class="nb">autoload</span> <span class="ss">:Client</span><span class="p">,</span> <span class="s1">&#39;test_gem/client&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>という感じになります。
+Railsだと <code>Gemfile</code> に書いたgemを自動でrequireしてくれますが、ここではしてくれないので手動でrequireしなければいけません。</p>
+
+<p>テストもディレクトリ構造を一致させましょう。
+最初は <code>spec/test_gem_spec.rb</code> しかありません。
+<code>spec/test_gem</code> ディレクトリを作り、 その中に <code>spec/test_gem/client_spec.rb</code> を作るという感じです。</p>
+
+<p><code>guard</code> を使う場合は、</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">guard</span> <span class="ss">:rspec</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^lib/(.+)\.rb$}</span><span class="p">)</span>     <span class="p">{</span> <span class="o">|</span><span class="n">m</span><span class="o">|</span> <span class="s2">&quot;spec/</span><span class="si">#{</span><span class="n">m</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="si">}</span><span class="s2">_spec.rb&quot;</span> <span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>と定義すればちょうどディレクトリ構造がぴったり合います。</p>
+
+<h2>実行可能なコマンドを含める</h2>
+
+<p>例えば <code>rspec</code> のような実行可能なコマンドも簡単に含めることができます。
+<code>bin</code> ディレクトリを作り、その中に実行ファイルを入れるだけです。</p>
+
+<p>コマンドなのでファイル名に <code>.rb</code> を付けないほうが見栄えがいいです。
+例えば <code>bin/run_test_gem</code> というファイル名で</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#!/usr/bin/env ruby</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;test_gem&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">p</span> <span class="ss">TestGem</span><span class="p">:</span><span class="ss">:Client</span><span class="o">.</span><span class="n">new</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>のような内容にすると、 <code>run_test_gem</code> というコマンドが使えるようになります。</p>
+
+<p>ただし普段rvmを使っているので、これに関してだけは他のシステムだとどうなるかちょっと分からないです。
+rvmの場合、直接コマンドを実行せずにラッパースクリプト経由になるので</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="ss">TestGem</span><span class="p">:</span><span class="ss">:Client</span><span class="o">.</span><span class="n">new</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>だけで動いてしまいます。</p>
+
+<h2>ビルドとかリリースとか</h2>
+
+<p>ビルドやリリースはすべてrakeタスクが用意されています</p>
+
+<pre><code>rake -T
+</code></pre>
+
+<p>で確認しましょう。</p>
+
+<p>リリースの前は <code>lib/test_gem/version.rb</code> を手で編集してバージョン番号を上げないといけません。
+(これのせいでjewelerが好きだった)</p>
+
+<p>上記の実行可能コマンドを実際に試してみたいときは、<strong>対象ファイルをコミットして</strong></p>
+
+<pre><code>rake install
+</code></pre>
+
+<p>でインストールしないと実行できないというよくハマりがちな罠があります。</p>
+
+<h2>実際にどんなふうにクラス書いていけばいいの?</h2>
+
+<p>他のgemをたくさん読みましょう。</p>
+
+<p>よく知られているgemの多くはとにかく<strong>デカイ</strong>です。
+構造を把握するだけでもかなり大変です。
+小奇麗にまとまったgemを探して読んでみましょう。</p>
+
+<h2>一番大事なこと</h2>
+
+<p>コードにもコミットメッセージにも <strong>日本語を含めるべきではない</strong> 。</p>
+
+<h2>もうちっとだけ続くんじゃ</h2>
+
+<ul>
+<li>Railsプラグインの作り方</li>
+<li>C拡張を含むgemの作り方</li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1143,193 +1476,6 @@ EroGetterの時もそうだったけどいちいちデーモンにするのが�
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/09/20/how-to-hide-json-values-in-loggin/">RailsログでJSONの一部を隠す方法</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-20T05:10:00+09:00" pubdate data-updated="true">Sep 20<span>th</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Rails のログ出力には filter_parameters という一部のパラメータを隠す便利な機能があります。</p>
-
-<p>デフォルトでは config/application.rb に</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">filter_parameters</span> <span class="o">+=</span> <span class="o">[</span><span class="ss">:password</span><span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>と書かれています。</p>
-
-<p>ここにフィルタしたいパラメータを追加すれば [FILTERED] という文字列に置き換えられます</p>
-
-<p>例えば開発者が user_id を見てはいけない社内ルールがある場合</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">filter_parameters</span> <span class="o">+=</span> <span class="o">[</span><span class="ss">:password</span><span class="p">,</span> <span class="ss">:user_id</span><span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>とすればいいわけです。</p>
-
-<h2>ためしてみる</h2>
-
-<h3>GETの場合</h3>
-
-<pre><code>GET /posts?password=abc123
-</code></pre>
-
-<p>を叩いた場合ログに</p>
-
-<pre><code>Started GET "/posts?password=[FILTERED]" for 127.0.0.1 at 2012-09-20 05:16:44 +0900
-Processing by PostsController#index as HTML
-  Parameters: {"password"=&gt;"[FILTERED]"}
-</code></pre>
-
-<p>とURLもパラメータも [FILTERED] に変えられて出力されます。</p>
-
-<h3>POSTの場合</h3>
-
-<pre><code>POST /posts
-data: password=abc123
-</code></pre>
-
-<p>を叩いた場合ログは</p>
-
-<pre><code>Started POST "/posts" for 127.0.0.1 at 2012-09-20 05:18:12 +0900
-Processing by PostsController#create as */*
-  Parameters: {"password"=&gt;"[FILTERED]"}
-</code></pre>
-
-<p>上手いことフィルタされますね。</p>
-
-<p>Rails の標準的なPOSTパラメータ形式の :post => {:password => &ldquo;abc123&rdquo;} はどうでしょうか</p>
-
-<pre><code>Started POST "/posts" for 127.0.0.1 at 2012-09-20 05:22:33 +0900
-Processing by PostsController#create as */*
-  Parameters: {"post"=&gt;{"password"=&gt;"[FILTERED]", "title"=&gt;"unko"}}
-</code></pre>
-
-<p>これもきちんとフィルタできてます。</p>
-
-<h2>特殊な事情</h2>
-
-<p>ある特殊な事情から「パラメータは json というキーに json 文字列で入ってくる」というプロジェクトがある場合どうなるでしょうか?
-ほんとにそんなプロジェクトがあるんでしょうか? ファックですね。
-どうせ原因はこのAPIを叩いてくるphpが低脳だからに違いありません。</p>
-
-<pre><code>POST "/post"
-data: json={\"password\":\"abc123\"}
-</code></pre>
-
-<p>という状況です。 ためしてみましょう。</p>
-
-<pre><code>Started POST "/posts" for 127.0.0.1 at 2012-09-20 05:30:56 +0900
-Processing by PostsController#create as */*
-  Parameters: {"json"=&gt;"{\"password\":\"abc123\"}"}
-</code></pre>
-
-<p>残念、丸見えです! かと言って :json を全部フィルタするのは開発の妨げになってしまいます。</p>
-
-<h3>一番かっこ悪い解決方法</h3>
-
-<p>filter_parameters には、|key, value| を引数に取る lambda を指定することもできるようです。
-サンプルでは</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">lambda</span> <span class="k">do</span> <span class="o">|</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="o">|</span>
-</span><span class='line'>  <span class="n">v</span><span class="o">.</span><span class="n">reverse!</span> <span class="k">if</span> <span class="n">k</span> <span class="o">=~</span> <span class="o">%</span><span class="n">rsecret</span><span class="o">/</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>と書かれていますが、reverse! と破壊的メソッドを使っているのがすごく嫌な予感がします。
-どうやら value のオブジェクトを破壊的に変更しないといけないようです。</p>
-
-<p>こんな感じで書いてみました。</p>
-
-<div><script src='https://gist.github.com/3752166.js'></script>
-<noscript><pre><code>config.filter_parameters += [:password, lambda {|k, v|
-   if k.to_sym == :json
-     json = JSON.parse(v).symbolize_keys
-     json[:password] = &quot;[FILTERED]&quot; if json.has_key?(:password)
-     v.replace json.to_s
-   end
-}]</code></pre></noscript></div>
-
-
-<p>ログの出力結果は</p>
-
-<pre><code>Started POST "/posts" for 127.0.0.1 at 2012-09-20 05:49:22 +0900
-Processing by PostsController#create as */*
-  Parameters: {"json"=&gt;"{:password=&gt;\"[FILTERED]\"}"}
-</code></pre>
-
-<p>上手くいってます!!</p>
-
-<p>ポイントは v.replace でオブジェクト自体は変えずに文字列を変更してる点です。
-これを</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">v</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">to_s</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>とやってしまうと上手く動きません。</p>
-
-<p>とりあえずこれで泣く泣く json の入力すべてを捨てる必要はなくなりました。 やった!!</p>
-
-<h3>問題点</h3>
-
-<ul>
-<li>[FILTERED] が定義されているクラスのファイルを require してもクラスが存在しないと言われる? ロード順の問題?</li>
-<li>普通に指定されたフィルタしたいパラメータを lambda 内で再利用できない
-
-<ul>
-<li>lambda での指定は最後に評価されるので</li>
-<li>before_filter (<strong>まさに!</strong>) があれば解決?</li>
-</ul>
-</li>
-</ul>
-
-
-<h2>ほんとにやりたい一番かっこいい解決方法</h2>
-
-<p>:json が渡ってきた場合は filter とかする前に JSON.parse してハッシュにしたい。
-そうすれば普通に filter_parameters += [:password, :user_id] を指定するだけで、
-:post => {:password => &ldquo;abc123&rdquo;} がフィルタできたのと同様にフィルタできるはず。</p>
-
-<p>次はこれを調べる。</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1345,6 +1491,10 @@ Processing by PostsController#create as */*
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/02/15/how-to-create-gem/">Gemの作り方まとめ 普通のgem編</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/12/25/capistrano-env/">不自由なデプロイを強いられてる人のための Capistrano-env ってgemを作った</a>
       </li>
     
@@ -1358,10 +1508,6 @@ Processing by PostsController#create as */*
     
       <li class="post">
         <a href="/blog/2013/02/14/supervisor-with-rvm/">Run Ruby on Supervisor With RVM</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/11/04/how-to-travis-a-gem-with-c-extension/">Travis CIでrubyのC拡張が入ったgemのテストをする方法</a>
       </li>
     
   </ul>
@@ -1416,7 +1562,7 @@ Processing by PostsController#create as */*
   </div>
   <footer role="contentinfo"><hr>
 <p>
-  Copyright &copy; 2013 - masarakki -
+  Copyright &copy; 2014 - masarakki -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
