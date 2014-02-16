@@ -9,9 +9,10 @@
   <meta name="author" content="masarakki">
 
   
-  <meta name="description" content="会社の人にgemの作り方まとめてくれって言われたので標準的なgemの作り方をまとめます。
-標準的な作り方なので他の人が作ったgemを読み解くヒントにもなります。 とはいえ有名なgemは(有名なgemに限って)メッチャクチャだったりするので読みづらかったりします。
-歴史が古かったりすると特にね。 &hellip;">
+  <meta name="description" content="飯田橋のカフェを貸し切って山城のお別れ会。 LTしたり、花火打ち上げたり、カネ貸したまま返ってこない暴露話をしたり、
+山城の恥ずかしいツイートを見ながら遺品山分けゲーム大会したり、
+MBAでスイカ割ったり、MBAにベルギービール飲ましたり、
+クズが集まってクズなどんちゃん騒ぎをして最高に楽しかった &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -71,6 +72,58 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/02/16/yamashiro-ga-shinda/">山城が死んだ</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-16T10:37:48+09:00" pubdate data-updated="true">Feb 16<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>飯田橋のカフェを貸し切って山城のお別れ会。</p>
+
+<p>LTしたり、花火打ち上げたり、カネ貸したまま返ってこない暴露話をしたり、
+山城の恥ずかしいツイートを見ながら遺品山分けゲーム大会したり、
+MBAでスイカ割ったり、MBAにベルギービール飲ましたり、
+クズが集まってクズなどんちゃん騒ぎをして最高に楽しかった。</p>
+
+<p>ただ
+楽しい場所には必ずいるはずの奴がいない
+いつも輪の中心で延々イジられ続けてるはずの奴がいない
+哀しい
+いたのかもしれないけど生きてる人間には見れない
+哀しい</p>
+
+<p>つーか死んでんじゃねえよバカ</p>
+
+<p>あと俺が死んだ時もLT大会で盛大に送ってほしいと思った</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1385,97 +1438,6 @@ Linuxでも棒読みができるアプリケーションyukkuriを作った俺�
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/09/22/yukkurid/">Yukkurid</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-22T06:59:00+09:00" pubdate data-updated="true">Sep 22<span>nd</span>, 2012</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><em>ゆっくりしていってね!</em></p>
-
-<h2>yukkuridとは?</h2>
-
-<p>棒読みちゃん+デーモン</p>
-
-<p>ニコ生をするのに欠かせないの棒読みちゃんというWindowsアプリがありますが、
-もちろんWindowsアプリなのでLinuxでは動きませんしWineで動くとしても動かしたくないですよね。</p>
-
-<p>でもやっぱり棒読み機能がないと不便なので作ってみました。</p>
-
-<p><a href="https://github.com/masarakki/yukkurid">yukkurid</a></p>
-
-<h2>棒読み部分</h2>
-
-<p>棒読みちゃんは内部で<a href="http://www.a-quest.com/">AquesTalk2</a>という読み上げライブラリを使用していて、
-これはWindows版だけでなくMacOS版とLinux版のライブラリも配布されています。
-<strong>(ただし有料)</strong></p>
-
-<p>棒読みにはそんなに機能は必要無いので、ほとんどサンプルファイルをそのままコンパイルして、
-十分実用なバイナリになりました。</p>
-
-<h2>デーモン部分</h2>
-
-<p>sinatraでちょちょっと作って終了です。
-POSTで受け取ったデータを、漢字が読めない棒読みちゃんのためにmecabで読みに変換して、
-棒読みちゃんに渡して吐かれたwavをALSAに食わせる。
-ワンライナーで瞬殺です。</p>
-
-<p>これでPOSTで送信するとコンピュータがゆっくり喋ってくれるようになりました!</p>
-
-<h2>次の展望</h2>
-
-<p>デーモンにさえすれば、実際にニコ生のコメントをchrome extensionから送信して、
-コンピュータが喋ってくれるようになるはずです。
-EroGetterの時もそうだったけどいちいちデーモンにするのがめんどくさいですがしかたないですね・・・</p>
-
-<p>というわけでchrome extensionのコメビュを作るか既存のをどっかからパクってきて繋ぎこみたいと思います。</p>
-
-<p>あとは今だと喋ってる間ブロックするので非同期化と、それにともなってちゃんとしたキューイングを。</p>
-
-<h2>ところで</h2>
-
-<p><a href="http://www.a-quest.com/licence_free.html">非商用の個人の開発ライセンス</a>を買ったのですが、</p>
-
-<ul>
-<li>アプリの機能として、外部ソフトから当社製品ライブラリの機能を呼び出し可能なインターフェースを持たないこと。</li>
-</ul>
-
-
-<p>ってどういうことなんだろう?
-これをラップした raques.gem みたいなのは作っちゃダメなのかな?
-.soと.hは自分で用意してねっていう形でならok?
-といっても今コンパイル済みバイナリを ./bin/yukkuri に置いてるけど、これも.so無いと動かないよね?
-かといって.so同梱できるようなライセンスじゃないよね? そんなんしたら商売上がったりだよね?
-あんまC方面わからんからこのライセンスが一体何をしてよくて何をしていけないのかわからない。</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1491,6 +1453,10 @@ EroGetterの時もそうだったけどいちいちデーモンにするのが�
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/02/16/yamashiro-ga-shinda/">山城が死んだ</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/02/15/how-to-create-gem/">Gemの作り方まとめ 普通のgem編</a>
       </li>
     
@@ -1504,10 +1470,6 @@ EroGetterの時もそうだったけどいちいちデーモンにするのが�
     
       <li class="post">
         <a href="/blog/2013/03/16/make-url-cool/">Make Url Cool</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/02/14/supervisor-with-rvm/">Run Ruby on Supervisor With RVM</a>
       </li>
     
   </ul>

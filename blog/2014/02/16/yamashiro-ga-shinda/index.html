@@ -5,12 +5,15 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>ゆっくりにアクセントをつけてみた - masarakki's blog</title>
+  <title>山城が死んだ - masarakki's blog</title>
   <meta name="author" content="masarakki">
 
   
-  <meta name="description" content="AquesTalk2が棒読み以上に棒読みだったという話">
-  <meta name="keywords" content="ruby,ツール,ニコ生,ゆっくり,棒読み">
+  <meta name="description" content="飯田橋のカフェを貸し切って山城のお別れ会。 LTしたり、花火打ち上げたり、カネ貸したまま返ってこない暴露話をしたり、
+山城の恥ずかしいツイートを見ながら遺品山分けゲーム大会したり、
+MBAでスイカ割ったり、MBAにベルギービール飲ましたり、
+クズが集まってクズなどんちゃん騒ぎをして最高に楽しかった &hellip;">
+  <meta name="keywords" content="friend,ymsr,geek,dwango,java-ja">
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -18,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://masarakki.github.com/blog/2012/10/07/make-yukkuri-to-use-accent">
+  <link rel="canonical" href="http://masarakki.github.com/blog/2014/02/16/yamashiro-ga-shinda">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="masarakki's blog" type="application/atom+xml">
@@ -72,7 +75,7 @@
   
   <header>
     
-      <h1 class="entry-title">ゆっくりにアクセントをつけてみた</h1>
+      <h1 class="entry-title">山城が死んだ</h1>
     
     
       <p class="meta">
@@ -88,67 +91,30 @@
   
 
 
-<time datetime="2012-10-07T03:21:00+09:00" pubdate data-updated="true">Oct 7<span>th</span>, 2012</time>
+<time datetime="2014-02-16T10:37:48+09:00" pubdate data-updated="true">Feb 16<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><h2>あらすじ</h2>
+<div class="entry-content"><p>飯田橋のカフェを貸し切って山城のお別れ会。</p>
 
-<p><em><a href="http://masarakki.github.com/blog/2012/09/22/yukkurid/">前回</a>、
-棒読みちゃんと同じAquesTalkという音声合成エンジンを使い、
-Linuxでも棒読みができるアプリケーションyukkuriを作った俺。</em></p>
+<p>LTしたり、花火打ち上げたり、カネ貸したまま返ってこない暴露話をしたり、
+山城の恥ずかしいツイートを見ながら遺品山分けゲーム大会したり、
+MBAでスイカ割ったり、MBAにベルギービール飲ましたり、
+クズが集まってクズなどんちゃん騒ぎをして最高に楽しかった。</p>
 
-<p><em>ところがこのyukkuriには致命的な欠陥があったのだ!!</em></p>
+<p>ただ
+楽しい場所には必ずいるはずの奴がいない
+いつも輪の中心で延々イジられ続けてるはずの奴がいない
+哀しい
+いたのかもしれないけど生きてる人間には見れない
+哀しい</p>
 
-<h2>実際に喋らせてみた</h2>
+<p>つーか死んでんじゃねえよバカ</p>
 
-<p>棒読みちゃん以上に棒読みだった。
-完全に真っ平ら。ぺったんこ。
-<strong>実は棒読みちゃんは棒読みじゃなかった</strong></p>
-
-<p>どうやらAquesTalkは自分でアクセント記号を付けないといけないようです。
-棒読みちゃんにもアクセント付きに変換された文字列が表示されます。</p>
-
-<h2>アクセントの付け方</h2>
-
-<p>やはりこのままmecabを使いたいので 「mecab アクセント」 でぐぐってみたところ、
-<a href="http://www.tokuteicorpus.jp/dist/">Unidic</a>というmecab用アクセント辞書があるようです。
-これを組み込めばアクセントがうまく処理できそうです。</p>
-
-<p>アクセントの仕様はかなり複雑なので一部から実装していきます。
-実際にニコ生で使って気になるアクセントがあったらテストを書いて修正していくという方法を取ります。</p>
-
-<h2>アクセントのテストデータ</h2>
-
-<p>アクセントの処理を実装するにあたって、もちろんテストデータが必要になります。</p>
-
-<h4>方法1. 棒読みちゃんに喋らせてみてアクセント付き文字列を使う</h4>
-
-<p>残念ながらLinuxではWineを使っても棒読みちゃんが動かなかったので断念。</p>
-
-<h4>方法2. TASETのデモページを使う</h4>
-
-<p><a href="https://sites.google.com/site/suzukimasayuki/accent">CRFを用いたアクセント結合推定</a>
-というなんか難しいサイトの <a href="http://www.gavo.t.u-tokyo.ac.jp/~suzuki/taset_demo/">デモページ</a>
-で文章にアクセントをつけることができます。
-ただし変換にかなり時間がかかり、実際に喋らせてみるとなんかちょっと変です。</p>
-
-<h4>方法3. 聞く</h4>
-
-<p>2で作ったアクセントを実際に喋らせてみて、
-自然に聞こえるように微調整するのが一番良さそうです。</p>
-
-<p>ただし、細かい部分では<strong>正しい</strong>日本語の発音なんてのは知らないので、
-こんなもんなのかで済ませます。</p>
-
-<h2>結果</h2>
-
-<p>たぶん棒読みちゃんより正確なアクセントが付けれるようになった。
-確認は<a href="https://github.com/masarakki/yukkurid">コード</a>を実行してみるか、
-<a href="http://com.nicovideo.jp/community/co600306">ニコ生の放送</a>を見てくださいな。</p>
+<p>あと俺が死んだ時もLT大会で盛大に送ってほしいと思った</p>
 </div>
 
 
@@ -171,12 +137,12 @@ Linuxでも棒読みができるアプリケーションyukkuriを作った俺�
   
 
 
-<time datetime="2012-10-07T03:21:00+09:00" pubdate data-updated="true">Oct 7<span>th</span>, 2012</time>
+<time datetime="2014-02-16T10:37:48+09:00" pubdate data-updated="true">Feb 16<span>th</span>, 2014</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/niconico/'>niconico</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
+    <a class='category' href='/blog/categories/ymsr/'>ymsr</a>
   
 </span>
 
@@ -185,7 +151,7 @@ Linuxでも棒読みができるアプリケーションyukkuriを作った俺�
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://masarakki.github.com/blog/2012/10/07/make-yukkuri-to-use-accent/" data-via="masarakki" data-counturl="http://masarakki.github.com/blog/2012/10/07/make-yukkuri-to-use-accent/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://masarakki.github.com/blog/2014/02/16/yamashiro-ga-shinda/" data-via="masarakki" data-counturl="http://masarakki.github.com/blog/2014/02/16/yamashiro-ga-shinda/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -196,10 +162,8 @@ Linuxでも棒読みができるアプリケーションyukkuriを作った俺�
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/09/22/yukkurid/" title="Previous Post: yukkurid">&laquo; yukkurid</a>
+        <a class="basic-alignment left" href="/blog/2014/02/15/how-to-create-gem/" title="Previous Post: gemの作り方まとめ 普通のgem編">&laquo; gemの作り方まとめ 普通のgem編</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2012/10/18/gem-src/" title="Next Post: gem-src">gem-src &raquo;</a>
       
     </p>
   </footer>
