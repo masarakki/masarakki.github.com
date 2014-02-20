@@ -9,8 +9,10 @@
   <meta name="author" content="masarakki">
 
   
-  <meta name="description" content="ゆっくりしていってね! yukkuridとは? 棒読みちゃん+デーモン ニコ生をするのに欠かせないの棒読みちゃんというWindowsアプリがありますが、
-もちろんWindowsアプリなのでLinuxでは動きませんしWineで動くとしても動かしたくないですよね。 &hellip;">
+  <meta name="description" content="あらすじ 前回、
+棒読みちゃんと同じAquesTalkという音声合成エンジンを使い、
+Linuxでも棒読みができるアプリケーションyukkuriを作った俺。 ところがこのyukkuriには致命的な欠陥があったのだ!! 実際に喋らせてみた 棒読みちゃん以上に棒読みだった。
+完全に真っ平ら。ぺったんこ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -70,6 +72,95 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/07/make-yukkuri-to-use-accent/">ゆっくりにアクセントをつけてみた</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-07T03:21:00+09:00" pubdate data-updated="true">Oct 7<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>あらすじ</h2>
+
+<p><em><a href="http://masarakki.github.com/blog/2012/09/22/yukkurid/">前回</a>、
+棒読みちゃんと同じAquesTalkという音声合成エンジンを使い、
+Linuxでも棒読みができるアプリケーションyukkuriを作った俺。</em></p>
+
+<p><em>ところがこのyukkuriには致命的な欠陥があったのだ!!</em></p>
+
+<h2>実際に喋らせてみた</h2>
+
+<p>棒読みちゃん以上に棒読みだった。
+完全に真っ平ら。ぺったんこ。
+<strong>実は棒読みちゃんは棒読みじゃなかった</strong></p>
+
+<p>どうやらAquesTalkは自分でアクセント記号を付けないといけないようです。
+棒読みちゃんにもアクセント付きに変換された文字列が表示されます。</p>
+
+<h2>アクセントの付け方</h2>
+
+<p>やはりこのままmecabを使いたいので 「mecab アクセント」 でぐぐってみたところ、
+<a href="http://www.tokuteicorpus.jp/dist/">Unidic</a>というmecab用アクセント辞書があるようです。
+これを組み込めばアクセントがうまく処理できそうです。</p>
+
+<p>アクセントの仕様はかなり複雑なので一部から実装していきます。
+実際にニコ生で使って気になるアクセントがあったらテストを書いて修正していくという方法を取ります。</p>
+
+<h2>アクセントのテストデータ</h2>
+
+<p>アクセントの処理を実装するにあたって、もちろんテストデータが必要になります。</p>
+
+<h4>方法1. 棒読みちゃんに喋らせてみてアクセント付き文字列を使う</h4>
+
+<p>残念ながらLinuxではWineを使っても棒読みちゃんが動かなかったので断念。</p>
+
+<h4>方法2. TASETのデモページを使う</h4>
+
+<p><a href="https://sites.google.com/site/suzukimasayuki/accent">CRFを用いたアクセント結合推定</a>
+というなんか難しいサイトの <a href="http://www.gavo.t.u-tokyo.ac.jp/~suzuki/taset_demo/">デモページ</a>
+で文章にアクセントをつけることができます。
+ただし変換にかなり時間がかかり、実際に喋らせてみるとなんかちょっと変です。</p>
+
+<h4>方法3. 聞く</h4>
+
+<p>2で作ったアクセントを実際に喋らせてみて、
+自然に聞こえるように微調整するのが一番良さそうです。</p>
+
+<p>ただし、細かい部分では<strong>正しい</strong>日本語の発音なんてのは知らないので、
+こんなもんなのかで済ませます。</p>
+
+<h2>結果</h2>
+
+<p>たぶん棒読みちゃんより正確なアクセントが付けれるようになった。
+確認は<a href="https://github.com/masarakki/yukkurid">コード</a>を実行してみるか、
+<a href="http://com.nicovideo.jp/community/co600306">ニコ生の放送</a>を見てくださいな。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -905,6 +996,10 @@ UploadedFileクラスの中身はTempfileなので</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/02/21/oauth-for-non-engineer/">非エンジニアのためのOAuth講座</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/02/16/yamashiro-ga-shinda/">山城が死んだ</a>
       </li>
     
@@ -918,10 +1013,6 @@ UploadedFileクラスの中身はTempfileなので</p>
     
       <li class="post">
         <a href="/blog/2013/03/22/java-ja-kowai/">Java-ja Kowai</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/03/16/make-url-cool/">Make Url Cool</a>
       </li>
     
   </ul>
