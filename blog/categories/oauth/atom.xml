@@ -4,7 +4,7 @@
   <title><![CDATA[Category: oauth | masarakki's blog]]></title>
   <link href="http://masarakki.github.com/blog/categories/oauth/atom.xml" rel="self"/>
   <link href="http://masarakki.github.com/"/>
-  <updated>2014-02-21T04:43:49+09:00</updated>
+  <updated>2014-02-21T04:46:03+09:00</updated>
   <id>http://masarakki.github.com/</id>
   <author>
     <name><![CDATA[masarakki]]></name>
@@ -92,6 +92,7 @@ OAuthってどんなものなのか、Twitterを例に誤解されそうなと�
 
 <ul>
 <li>パスワードは変えなくていいよ</li>
+<li>アプリがパスワード入力を求めてきたら罠だよ</li>
 <li>許可を取り消せばそれっきりだよ</li>
 <li>ビビって騙されないように</li>
 </ul>
