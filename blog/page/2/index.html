@@ -9,10 +9,8 @@
   <meta name="author" content="masarakki">
 
   
-  <meta name="description" content="あらすじ 前回、
-棒読みちゃんと同じAquesTalkという音声合成エンジンを使い、
-Linuxでも棒読みができるアプリケーションyukkuriを作った俺。 ところがこのyukkuriには致命的な欠陥があったのだ!! 実際に喋らせてみた 棒読みちゃん以上に棒読みだった。
-完全に真っ平ら。ぺったんこ &hellip;">
+  <meta name="description" content="gem-src がすごく便利。 よくあるパターン 1. gemのソースコードを読みたい時 gemを使ってるとソースをがっつり追いたくなる時がありますが、そんな時どうしてますか?
+最近編み出したのが、とりあえずインストールされたgemをgitに突っ込むというワザです。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -72,6 +70,115 @@ Linuxでも棒読みができるアプリケーションyukkuriを作った俺�
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/18/gem-src/">Gem-src</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-18T00:13:00+09:00" pubdate data-updated="true">Oct 18<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="https://github.com/amatsuda/gem-src">gem-src</a> がすごく便利。</p>
+
+<h2>よくあるパターン</h2>
+
+<h3>1. gemのソースコードを読みたい時</h3>
+
+<p>gemを使ってるとソースをがっつり追いたくなる時がありますが、そんな時どうしてますか?
+最近編み出したのが、とりあえずインストールされたgemをgitに突っ込むというワザです。</p>
+
+<p>rvmを使っているのでこんな感じに。</p>
+
+<pre><code>$ cd ~/.rvm/gems/ruby-1.9.4-p194@hoge/gems/hoge_gem
+$ git init; git add .
+$ git grep hogehoge
+</code></pre>
+
+<p>これでも十分に便利ですけど、gemのディレクトリまで行くのが面倒ですよねー。</p>
+
+<h3>2. gemに Pull Request したい時</h3>
+
+<p>gemの名前は知っていても誰が作ったかなんて覚えてませんよね。
+hubコマンドもユーザ名がわからないと使えません。
+(なぜか hub clone rails はできるんだけどなんでだろう・・・)
+結局githubで検索してリポジトリを探さないといけません。</p>
+
+<h2>gem-srcを使う</h2>
+
+<p>gem-srcを使うと、gem install した時に同時にgithubからソースコードを git clone してくれます。
+その前に .gemrc にダウンロードするディレクトリを設定しておきましょう。</p>
+
+<pre><code>$ echo "gemsrc_clone_root: ~/src/gems" &gt;&gt; ~/.gemrc
+</code></pre>
+
+<p>この状態でgem install してみましょう。</p>
+
+<pre><code>$ gem install ero_getter
+Fetching: zipruby-0.3.6.gem (100%)
+Building native extensions.  This could take a while...
+Fetching: ero_getter-1.6.0.gem (100%)
+Cloning into '/home/masaki/src/gems/ero_getter'...
+remote: Counting objects: 665, done.
+remote: Compressing objects: 100% (310/310), done.
+remote: Total 665 (delta 306), reused 634 (delta 278)
+Receiving objects: 100% (665/665), 274.95 KiB | 165 KiB/s, done.
+Resolving deltas: 100% (306/306), done.
+Successfully installed zipruby-0.3.6
+Successfully installed ero_getter-1.6.0
+2 gems installed
+
+$ ls ~/src/gem
+./  ../  ero_getter/  gem-src/
+</code></pre>
+
+<p>入りましたね!</p>
+
+<pre><code>$ cd ~/src/gem/ero_getter
+$ git remote show origin
+* remote origin
+  Fetch URL: http://github.com/masarakki/ero_getter
+    Push  URL: http://github.com/masarakki/ero_getter
+</code></pre>
+
+<p>hubでforkした時と同じ状態なのでそのままhubコマンドでforkも Pull Request もできそうです。</p>
+
+<pre><code>$ hub fork
+$ hub pull-request
+</code></pre>
+
+<p>やったーforkできたよー多分 Pull Request もできるよー</p>
+
+<h2>条件</h2>
+
+<p>gemのメタデータにあるhomepageの項目がgithubっぽかったらcloneするらしいです。
+なのでみんなhomepageはgithubのurlにしましょう。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -996,6 +1103,10 @@ UploadedFileクラスの中身はTempfileなので</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/04/29/cho-tuning/">超チューニング祭に参加した</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/02/21/oauth-for-non-engineer/">非エンジニアのためのOAuth講座</a>
       </li>
     
@@ -1009,10 +1120,6 @@ UploadedFileクラスの中身はTempfileなので</p>
     
       <li class="post">
         <a href="/blog/2013/12/25/capistrano-env/">不自由なデプロイを強いられてる人のための Capistrano-env ってgemを作った</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/03/22/java-ja-kowai/">Java-ja Kowai</a>
       </li>
     
   </ul>
